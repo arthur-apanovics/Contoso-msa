@@ -15,8 +15,8 @@ namespace ContosoData
         {
         }
 
-        //public DbSet<Account> Accounts { get; set; }
-        //public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Activity> ActivityLogs { get; set; }
     }
 }

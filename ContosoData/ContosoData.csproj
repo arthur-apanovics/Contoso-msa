@@ -52,6 +52,18 @@
     <Compile Include="Migrations\201708260244322_ActivityLogging.Designer.cs">
       <DependentUpon>201708260244322_ActivityLogging.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708260327539_AddAccountAndTransactionModels.cs" />
+    <Compile Include="Migrations\201708260327539_AddAccountAndTransactionModels.Designer.cs">
+      <DependentUpon>201708260327539_AddAccountAndTransactionModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708260416357_PopulateAcocunts.cs" />
+    <Compile Include="Migrations\201708260416357_PopulateAcocunts.Designer.cs">
+      <DependentUpon>201708260416357_PopulateAcocunts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708260435122_PopulateTransactions.cs" />
+    <Compile Include="Migrations\201708260435122_PopulateTransactions.Designer.cs">
+      <DependentUpon>201708260435122_PopulateTransactions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Account.cs" />
     <Compile Include="Model\Activity.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -67,6 +79,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201708260244322_ActivityLogging.resx">
       <DependentUpon>201708260244322_ActivityLogging.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708260327539_AddAccountAndTransactionModels.resx">
+      <DependentUpon>201708260327539_AddAccountAndTransactionModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708260416357_PopulateAcocunts.resx">
+      <DependentUpon>201708260416357_PopulateAcocunts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708260435122_PopulateTransactions.resx">
+      <DependentUpon>201708260435122_PopulateTransactions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
