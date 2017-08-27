@@ -125,9 +125,10 @@
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\AccountsDialog.cs" />
     <Compile Include="Dialogs\FaqDialog.cs" />
-    <Compile Include="Dialogs\OptionsDialog.cs" />
+    <Compile Include="Dialogs\LuisDialog.cs" />
     <Compile Include="Dialogs\PaymentsDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
+    <Compile Include="Forms\AccountQuery.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

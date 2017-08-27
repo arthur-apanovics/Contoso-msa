@@ -24,9 +24,10 @@ namespace ContosoBot
                     .ForMember(dest => dest.RecipientName, opt => opt.MapFrom(src => src.Recipient.Name));
             });
 
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
-            builder.Update(Conversation.Container);
+            //TODO: Uncomment to enable logging.
+            //var builder = new ContainerBuilder();
+            //builder.RegisterType<ActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
+            //builder.Update(Conversation.Container);
         }
     }
 }

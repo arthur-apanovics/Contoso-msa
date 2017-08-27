@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -9,79 +10,56 @@ namespace ContosoBot.Dialogs
     [Serializable]
     public class RootDialog : IDialog<object>
     {
-        private const string AccountsOption = "My Account";
-        private const string PaymentsOption = "Payments";
-        private const string SupportOption  = "Support";
+        private const string HelpMessage = "Here's what I can help you with:" +
+                                           "\n * Checking account information" +
+                                           "\n * Making payments and transfers" +
+                                           "\n * Viewing payment and transfer history";
+
+        private string _userName;
+        private bool _userWelcomed;
+
 
         public Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
-
+            
             return Task.CompletedTask;
         }
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            await WelcomeMessageAsync(context);
-        }
-
-        private async Task WelcomeMessageAsync(IDialogContext context)
-        {
-            await context.PostAsync("Welcome. I am your Contoso Banking assistant. What can I help you with today?");
-            ShowOptions(context);
-        }
-
-        private void ShowOptions(IDialogContext context)
-        {
-            PromptDialog.Choice(context,
-                OnSelectionMade,
-                new List<string>(){ AccountsOption, PaymentsOption, SupportOption },
-                "Available categories",
-                "Sorry, I didn't get that. Please choose one of the available categories.");
-        }
-
-        private async Task OnSelectionMade(IDialogContext context, IAwaitable<string> result)
-        {
-            try
+            if (!_userWelcomed)
             {
-                string selection = await result;
-
-                switch (selection)
+                if (!context.UserData.TryGetValue("Name", out _userName))
                 {
-                    case AccountsOption:
-                        context.Call(new AccountsDialog(), this.ResumeAfterOptionDialog);
-                        break;
-
-                    case PaymentsOption:
-                        context.Call(new PaymentsDialog(), this.ResumeAfterOptionDialog);
-                        break;
-
-                    case SupportOption:
-                        context.Call(new FaqDialog(), this.ResumeAfterOptionDialog);
-                        break;
+                    await context.PostAsync("Welcome. I am your Contoso Banking assistant.");
+                    PromptDialog.Text(context, this.ResumeAfterPrompt, "Before we get started, could you please tell me your name?");
+                }
+                else
+                {
+                    await context.PostAsync($"Welcome back {_userName}. {HelpMessage}");
+                    _userWelcomed = true;
                 }
             }
-            catch (TooManyAttemptsException ex)
-            {
-                await context.PostAsync("Sorry, too many failed attemps. Let's start over.");
 
-                context.Wait(MessageReceivedAsync);
-            }
+            context.Call(new LuisDialog(), ResumeAfterLuis);
         }
 
-        //TODO: Check this right here.
-        private async Task ResumeAfterOptionDialog(IDialogContext context, IAwaitable<object> result)
+        private Task ResumeAfterLuis(IDialogContext context, IAwaitable<Object> result)
         {
-            try
-            {
-                var message = await result;
-            }
-            catch (Exception ex)
-            {
-                await context.PostAsync($"!!! Failed with message: {ex.Message}. Starting over.");
-                await MessageReceivedAsync(context, result);
-                //context.Wait(MessageReceivedAsync);
-            }
+            throw new NotImplementedException("Exited Luis Dialog, back in root.");
+        }
+
+        private async Task ResumeAfterPrompt(IDialogContext context, IAwaitable<string> result)
+        {
+            var userName = await result;
+            _userWelcomed = true;
+
+            await context.PostAsync($"**Hello, {userName}!** {HelpMessage}");
+
+            context.UserData.SetValue("Name", userName);
+            
+            context.Wait(this.MessageReceivedAsync);
         }
     }
 }
