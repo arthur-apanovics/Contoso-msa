@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -18,6 +20,11 @@ namespace ContosoBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
+                var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                Activity isTypingReply = activity.CreateReply();
+                isTypingReply.Type = ActivityTypes.Typing;
+                await connector.Conversations.ReplyToActivityAsync(isTypingReply);
+
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
             }
             else
@@ -37,9 +44,14 @@ namespace ContosoBot
             }
             else if (message.Type == ActivityTypes.ConversationUpdate)
             {
-                // Handle conversation state changes, like members being added and removed
-                // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
-                // Not available in all channels
+                if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
+                {
+                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.1");
+
+                    ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+
+                    connector.Conversations.ReplyToActivityAsync(reply);
+                }
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)
             {

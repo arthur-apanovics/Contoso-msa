@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using ContosoBot.Models;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 
@@ -31,13 +33,18 @@ namespace ContosoBot.Dialogs
         [LuisIntent("QueryAccounts")]
         public async Task QueryAccounts(IDialogContext context, LuisResult result)
         {
-            context.Call(new AccountsDialog(), Callback);
+            context.Call(new AccountQueryDialog(), Callback);
         }
 
         [LuisIntent("QueryTransactionsByDates")]
         public async Task QueryTransactionsByDates(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("QueryTransactionsByDates recognized!!!");
+            context.Call(new TransactionsQueryDialog(), Callback);
+        }
+
+        private async Task<IDialog<object>> AfterTransactionFormContinuation(IBotContext context, IAwaitable<object> item)
+        {
+            return Chain.Return("Form done, continuation called.");
         }
 
         private async Task Callback(IDialogContext context, IAwaitable<object> result)

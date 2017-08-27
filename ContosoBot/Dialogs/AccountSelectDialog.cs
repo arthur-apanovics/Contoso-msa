@@ -12,11 +12,11 @@ using Microsoft.Bot.Connector;
 namespace ContosoBot.Dialogs
 {
     [Serializable]
-    public class AccountsDialog : IDialog
+    public class AccountSelectDialog : IDialog
     {
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Just a moment, getting your accounts...");
+            await context.PostAsync("Just a moment, getting your accounts data...");
 
             var reply = context.MakeMessage();
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;

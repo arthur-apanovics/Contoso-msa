@@ -123,15 +123,18 @@
     <Compile Include="ActivityLogger.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\AccountsDialog.cs" />
+    <Compile Include="Dialogs\AccountQueryDialog.cs" />
+    <Compile Include="Dialogs\AccountSelectDialog.cs" />
     <Compile Include="Dialogs\FaqDialog.cs" />
     <Compile Include="Dialogs\LuisDialog.cs" />
     <Compile Include="Dialogs\PaymentsDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
+    <Compile Include="Dialogs\TransactionsQueryDialog.cs" />
     <Compile Include="Forms\AccountQuery.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\TransactionHistoryRangeQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
