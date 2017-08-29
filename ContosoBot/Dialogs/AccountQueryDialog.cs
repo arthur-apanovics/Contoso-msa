@@ -13,13 +13,15 @@ namespace ContosoBot.Dialogs
     {
         public async Task StartAsync(IDialogContext context)
         {
+            await context.PostAsync("Fetching your accounts, just a moment...");
+
             var reply = context.MakeMessage();
             reply.AttachmentLayout = AttachmentLayoutTypes.List;
             reply.Attachments = GetAcocuntAttachments();
 
             await context.PostAsync(reply);
             
-            context.Done("");
+            context.Done(true);
         }
 
         private IList<Attachment> GetAcocuntAttachments()

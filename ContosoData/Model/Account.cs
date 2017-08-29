@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ContosoData.Model
 {
+    [Serializable]
     public class Account
     {
         public int Id { get; set; }

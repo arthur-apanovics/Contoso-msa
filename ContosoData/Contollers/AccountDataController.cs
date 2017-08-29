@@ -20,12 +20,12 @@ namespace ContosoData.Contollers
         }
 
         //TODO: Change account from int back to Account
-        public IEnumerable<Transaction> GetTransactionRangeByDate(int account, DateTime dateStart, DateTime dateEnd)
+        public IEnumerable<Transaction> GetTransactionRangeByDate(Account account, DateTime dateStart, DateTime dateEnd)
         {
             return _context.Transactions.Where(t =>
                 t.DateTime >= dateStart &&
                 t.DateTime <= dateEnd &&
-                t.AccountId == account); //TODO: change back to Account from int
+                t.AccountId == account.Id); //TODO: change back to Account from int
         }
     }
 }

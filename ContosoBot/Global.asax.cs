@@ -25,9 +25,9 @@ namespace ContosoBot
             });
 
             //TODO: Uncomment to enable logging.
-            //var builder = new ContainerBuilder();
-            //builder.RegisterType<ActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
-            //builder.Update(Conversation.Container);
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
+            builder.Update(Conversation.Container);
         }
     }
 }

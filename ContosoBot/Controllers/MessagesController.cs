@@ -39,14 +39,13 @@ namespace ContosoBot
         {
             if (message.Type == ActivityTypes.DeleteUserData)
             {
-                // Implement user deletion here
-                // If we handle user deletion, return a real message
+                
             }
             else if (message.Type == ActivityTypes.ConversationUpdate)
             {
                 if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
                 {
-                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.1");
+                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.1. Say hi to the bot");
 
                     ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
 
