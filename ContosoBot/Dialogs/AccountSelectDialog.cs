@@ -60,7 +60,7 @@ namespace ContosoBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            //TODO: Validation
+            //TODO: Validation & Typing support
             var message = await result;
             var deserializedAccount = JsonConvert.DeserializeObject<Account>(message.Value.ToString());
             context.Done(deserializedAccount);

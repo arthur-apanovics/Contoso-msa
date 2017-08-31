@@ -39,16 +39,12 @@ namespace ContosoBot.Dialogs
         [LuisIntent("QueryTransactionsByDates")]
         public async Task QueryTransactionsByDates(IDialogContext context, LuisResult result)
         {
-            context.Call(new TransactionsQueryDialog(), Callback);
-        }
-
-        private async Task<IDialog<object>> AfterTransactionFormContinuation(IBotContext context, IAwaitable<object> item)
-        {
-            return Chain.Return("Form done, continuation called.");
+            context.Call(new TransactionsQueryDialog(result.Entities), Callback);
         }
 
         private async Task Callback(IDialogContext context, IAwaitable<object> result)
         {
+            await context.PostAsync("What would you like to do next?");
             context.Wait(MessageReceived);
         }
     }
