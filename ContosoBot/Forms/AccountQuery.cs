@@ -15,7 +15,7 @@ namespace ContosoBot.Forms
 
         public AccountQuery()
         {
-            Accounts = new AccountDataController().GetAccounts();
+            Accounts = AccountDataController.Accounts;
         }
 
 

@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
-using ContosoBot.Forms;
 using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
 
@@ -18,6 +13,13 @@ namespace ContosoBot.Dialogs
     [Serializable]
     public class AccountSelectDialog : IDialog
     {
+        private readonly IEnumerable<Account> _accounts;
+
+        public AccountSelectDialog()
+        {
+            // have to convert to a list, otherwise get a serialization error (?!)
+            _accounts = AccountDataController.Accounts.ToList();
+        }
 
         public async Task StartAsync(IDialogContext context)
         {
@@ -36,12 +38,9 @@ namespace ContosoBot.Dialogs
 
         private IList<Attachment> GetAcocuntAttachments()
         {
-            var userAccounts = new AccountDataController().GetAccounts();
-
-
             var result = new List<Attachment>();
 
-            foreach (var account in userAccounts)
+            foreach (var account in _accounts)
             {
                 result.Add(
                     new ThumbnailCard()
@@ -58,12 +57,48 @@ namespace ContosoBot.Dialogs
             return result;
         }
 
+        //TODO: Validation; Too many if statements
+        //DONE: Typing support
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            //TODO: Validation & Typing support
             var message = await result;
-            var deserializedAccount = JsonConvert.DeserializeObject<Account>(message.Value.ToString());
-            context.Done(deserializedAccount);
+            Account selectedAccount = null;
+
+            //Check message and respond with action
+            if (message.Value != null)
+            {
+                try
+                {
+                    selectedAccount = JsonConvert.DeserializeObject<Account>(message.Value.ToString());
+                }
+                catch (JsonException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            else if(!string.IsNullOrEmpty(message.Text))
+            {
+                //Check if user typed name of account instead.
+                foreach (var account in _accounts)
+                {
+                    if (string.Equals(account.Name, message.Text, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        selectedAccount = account;
+                        break;
+                    }
+                }
+            }
+
+            if (selectedAccount != null)
+            {
+                await context.PostAsync($"{selectedAccount.Name} selected");
+                context.Done(selectedAccount);
+            }
+            else
+            {
+                await context.PostAsync("Sorry, no account with that name. Please try again");
+                context.Wait(MessageReceivedAsync);
+            }
         }
     }
 }

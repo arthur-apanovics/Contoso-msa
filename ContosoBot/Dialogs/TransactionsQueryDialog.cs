@@ -100,8 +100,7 @@ namespace ContosoBot.Dialogs
         private async Task ResumeAfterTransactionQueryDialog(IDialogContext context, IAwaitable<TransactionHistoryRangeQuery> result)
         {
             var query = await result;
-            var queriedTransactions = new AccountDataController()
-                .GetTransactionRangeByDate(_selectedAccount, query.DateStart, query.DateEnd);
+            var queriedTransactions = AccountDataController.GetTransactionRangeByDate(_selectedAccount, query.DateStart, query.DateEnd);
 
             string output = String.Empty;
 

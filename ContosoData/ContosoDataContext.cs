@@ -8,6 +8,7 @@ using ContosoData.Model;
 
 namespace ContosoData
 {
+    [Serializable]
     public class ContosoDataContext : DbContext
     {
         public ContosoDataContext()
