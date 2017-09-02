@@ -27,16 +27,16 @@ namespace ContosoBot.Dialogs
 
             var reply = context.MakeMessage();
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-            reply.Attachments = GetAcocuntAttachments();
+            reply.InputHint = InputHints.ExpectingInput;
+            reply.Attachments = GetAccountAttachments();
 
             await context.PostAsync("Please select account to work with:");
-
             await context.PostAsync(reply);
 
             context.Wait(MessageReceivedAsync);
         }
 
-        private IList<Attachment> GetAcocuntAttachments()
+        private IList<Attachment> GetAccountAttachments()
         {
             var result = new List<Attachment>();
 
@@ -47,7 +47,7 @@ namespace ContosoBot.Dialogs
                     {
                         Title = account.Name,
                         Subtitle = account.Number,
-                        Text = $"Type: {account.Type}, Overdraft limit: {account.OverdraftLimit:C}, Balance: {account.Balance:C}",
+                        //Text = $"Type: {account.Type}, Overdraft limit: {account.OverdraftLimit:C}, Balance: {account.Balance:C}",
                         Buttons = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account) }
                     }
                     .ToAttachment()

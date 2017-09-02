@@ -135,6 +135,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DateRange.cs" />
+    <Compile Include="Models\EntityProps.cs" />
     <Compile Include="Models\TransactionHistoryRangeQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

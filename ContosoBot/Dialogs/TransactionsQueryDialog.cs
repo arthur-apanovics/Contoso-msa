@@ -19,17 +19,12 @@ namespace ContosoBot.Dialogs
     {
         private Account _selectedAccount;
         private IList<EntityRecommendation> _luisEntities;
-
-        // LUIS built in entity to resolve people and company names.
-        private string _encyclopedia;
-        private float _money;
-        private int _ordinal;
-        private DateRange _dateRange;
-
+        private EntityProps _entities;
 
         public TransactionsQueryDialog(IList<EntityRecommendation> luisEntities = null)
         {
             _luisEntities = luisEntities;
+            _entities = new EntityProps();
         }
 
         public async Task StartAsync(IDialogContext context)
@@ -39,25 +34,20 @@ namespace ContosoBot.Dialogs
             foreach (var entityRecommendation in _luisEntities)
             {
                 //handle encycplopedia seperately due to multiple recommendations per encyclopedia entity
-                if (entityRecommendation.Type.Contains("builtin.encyclopedia") && string.IsNullOrEmpty(_encyclopedia))
+                if (entityRecommendation.Type.Contains("builtin.encyclopedia") && string.IsNullOrEmpty(_entities.Encyclopedia))
                 {
-                    _encyclopedia = entityRecommendation.Entity;
-                    return;
+                    _entities.Encyclopedia = entityRecommendation.Entity;
+                    break;
                 }
                 switch (entityRecommendation.Type)
                 {
-                    case "builtin.encyclopedia":
-
-                        _encyclopedia = entityRecommendation.Entity;
-                        break;
-
                     case "builtin.currency":
                         var resolved = entityRecommendation.Resolution
                             .FirstOrDefault(r => r.Key == "value")
                             .Value
                             .ToString();
-
-                        float.TryParse(resolved, out _money);
+                        float.TryParse(resolved, out var parsedValue);
+                        _entities.Currency = parsedValue;
                         break;
 
                     case "builtin.datetimeV2.daterange":
@@ -67,8 +57,29 @@ namespace ContosoBot.Dialogs
                             .ToString()
                             .Trim('[', ']');
 
-                        _dateRange =
-                            JsonConvert.DeserializeObject<DateRange>(resolutionJson);
+                        _entities.DateRange = JsonConvert.DeserializeObject<DateRange>(resolutionJson);
+                        break;
+
+                    //comparison operators. 
+                    //TODO: Check for multiple operators (e.g. <=)
+                    case "comparisonOperator::equal":
+                        _entities.ComparisonOperator = "equal";
+                        break;
+
+                    case "comparisonOperator::lessThan":
+                        _entities.ComparisonOperator = "lessThan";
+                        break;
+                    case "comparisonOperator::moreThan":
+                        _entities.ComparisonOperator = "moreThan";
+                        break;
+
+                    //custom ordinals
+                    case "ordinalTense::last":
+                        _entities.OrdinalTense = "last";
+                        break;
+
+                    case "ordinalTense::first":
+                        _entities.OrdinalTense = "first";
                         break;
                 }
             }
@@ -78,6 +89,10 @@ namespace ContosoBot.Dialogs
         {
             var selection = await result;
             _selectedAccount = selection as Account;
+
+
+
+
 
             var transactionQueryDialog = FormDialog.FromForm(BuildTransactionRangeForm, FormOptions.PromptInStart);
             context.Call(transactionQueryDialog, ResumeAfterTransactionQueryDialog);

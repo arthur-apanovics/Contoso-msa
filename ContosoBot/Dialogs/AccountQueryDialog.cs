@@ -27,7 +27,6 @@ namespace ContosoBot.Dialogs
         private IList<Attachment> GetAcocuntAttachments()
         {
             var userAccounts = AccountDataController.Accounts;
-
             var result = new List<Attachment>();
 
             foreach (var account in userAccounts)
