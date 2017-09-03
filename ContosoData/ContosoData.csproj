@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contollers\AccountDataController.cs" />
+    <Compile Include="Contollers\QueryStringBuilder.cs" />
     <Compile Include="ContosoDataContext.cs" />
     <Compile Include="Migrations\201708260244322_ActivityLogging.cs" />
     <Compile Include="Migrations\201708260244322_ActivityLogging.Designer.cs">

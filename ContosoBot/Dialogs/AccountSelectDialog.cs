@@ -89,7 +89,11 @@ namespace ContosoBot.Dialogs
                 }
             }
 
-            if (selectedAccount != null)
+            if (message.Text == "quit")
+            {
+                context.Fail(new Exception("User quit"));
+            }
+            else if (selectedAccount != null)
             {
                 await context.PostAsync($"{selectedAccount.Name} selected");
                 context.Done(selectedAccount);
