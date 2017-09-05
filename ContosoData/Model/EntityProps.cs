@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace ContosoBot.Models
+namespace ContosoData.Model
 {
     /// <summary>
     /// Holds entites passed in through the query
@@ -21,7 +19,7 @@ namespace ContosoBot.Models
 
         public EntityProps()
         {
-            DateRange = new DateRange();
+            //DateRange = new DateRange();
         }
     }
 }

@@ -69,6 +69,8 @@
     <Compile Include="Model\Account.cs" />
     <Compile Include="Model\Activity.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\DateRange.cs" />
+    <Compile Include="Model\EntityProps.cs" />
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

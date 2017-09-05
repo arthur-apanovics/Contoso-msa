@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace ContosoBot.Models
+namespace ContosoData.Model
 {
     /// <summary>
     /// Holds properties for LUIS datetimev2 resolutions
@@ -13,7 +10,7 @@ namespace ContosoBot.Models
     {
         public string Timex { get; set; }
         public string Type { get; set; }
-        public DateTime? Start { get; set; }
-        public DateTime? End { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
     }
 }

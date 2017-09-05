@@ -34,13 +34,11 @@ namespace ContosoData.Contollers
             return _context.Accounts;
         }
 
-        //TODO: Change account from int back to Account
-        public static IEnumerable<Transaction> GetTransactionRangeByDate(Account account, DateTime dateStart, DateTime dateEnd)
+        public static IEnumerable<Transaction> GetTransactionsFromEntities(Account account, EntityProps entities)
         {
-            return _context.Transactions.Where(t =>
-                t.DateTime >= dateStart &&
-                t.DateTime <= dateEnd &&
-                t.AccountId == account.Id); //TODO: change back to Account from int
+            var sql = new QueryStringBuilder().TransactionBuilder(account, entities);
+            return _context.Transactions.SqlQuery(sql)
+                .OrderBy(t => t.DateTime);
         }
     }
 }

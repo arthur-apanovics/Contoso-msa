@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using ContosoBot.Models;
+using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
 using Newtonsoft.Json;
@@ -37,31 +38,33 @@ namespace ContosoBot
                     var resolvedDict = getTheListObj[0] as Dictionary<string, object>;
 
                     //assign string values
-                    var outTimex = resolvedDict["timex"].ToString();
-                    var outType = resolvedDict["type"].ToString();
-                    DateTime outStart = new DateTime();
-                    DateTime outEnd = new DateTime();
+                    var outDateTimex = resolvedDict["timex"].ToString();
+                    var outDateType = resolvedDict["type"].ToString();
+                    DateTime outDateStart = new DateTime();
+                    DateTime outDateEnd = new DateTime();
 
 
                     //parse datetime values
-                    if (outType == "date")
+                    switch (outDateType)
                     {
-                        DateTime.TryParse(resolvedDict["value"].ToString(), out outStart);
-                    }
-                    else if (outType == "daterange" || outType == "datetimerange")
-                    {
-                        DateTime.TryParse(resolvedDict["start"].ToString(), out outStart);
-                        DateTime.TryParse(resolvedDict["end"].ToString(), out outEnd);
+                        case "date":
+                            DateTime.TryParse(resolvedDict["value"].ToString(), out outDateStart);
+                            break;
+                        case "daterange":
+                        case "datetimerange":
+                            DateTime.TryParse(resolvedDict["start"].ToString(), out outDateStart);
+                            DateTime.TryParse(resolvedDict["end"].ToString(), out outDateEnd);
+                            break;
                     }
 
 
                     //set property to parsed values
                     entityProps.DateRange = new DateRange
                     {
-                        Timex = outTimex,
-                        Type = outType,
-                        Start = outStart,
-                        End = outEnd
+                        Timex = outDateTimex,
+                        Type = outDateType,
+                        Start = outDateStart,
+                        End = outDateEnd
                     };
                     continue;
                 }
@@ -100,6 +103,14 @@ namespace ContosoBot
                         entityProps.OrdinalTense = "first";
                         break;
                 }
+            }
+
+            if (entityProps.DateRange == null
+                && entityProps.Currency == 0
+                && string.IsNullOrEmpty(entityProps.Encyclopedia)
+                && string.IsNullOrEmpty(entityProps.OrdinalTense))
+            {
+                return null;
             }
 
             return entityProps;
