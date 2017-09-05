@@ -95,7 +95,7 @@ namespace ContosoBot.Dialogs
             }
             else if (selectedAccount != null)
             {
-                await context.PostAsync($"{selectedAccount.Name} selected");
+                //await context.PostAsync($"{selectedAccount.Name} selected");
                 context.Done(selectedAccount);
             }
             else
