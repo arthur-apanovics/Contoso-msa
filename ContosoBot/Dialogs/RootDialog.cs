@@ -14,13 +14,14 @@ namespace ContosoBot.Dialogs
         //                                   "\n * Checking account information" +
         //                                   "\n * Making payments and transfers" +
         //                                   "\n * Viewing payment and transfer history";
+
         private const string HelpMessage = "Here's what's working right now:" +
                                            "\n * Checking account information" +
-                                           "\n * Viewing transaction history";
+                                           "\n * Viewing transaction history" +
+                                           "\n\n **NEW!** Natural language support (LUIS)";
         private string _userName;
         private bool _userWelcomed;
-
-
+        
         public Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
