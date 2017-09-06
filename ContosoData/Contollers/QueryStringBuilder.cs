@@ -9,6 +9,7 @@ namespace ContosoData.Contollers
 {
     class QueryStringBuilder
     {
+        //TODO: Use StringBuilder instead of string concatenation
         public string TransactionBuilder(Account account, EntityProps entities)
         {
             //if no usable entities supplied by user, return latest 5 transaction query string
@@ -43,6 +44,8 @@ namespace ContosoData.Contollers
             }
             else
             {
+                query += "* FROM Transactions WHERE ";
+
                 //dates
                 //TODO: check collisions if OrdinalTense is set as well
                 switch (entities.DateRange.Type)
