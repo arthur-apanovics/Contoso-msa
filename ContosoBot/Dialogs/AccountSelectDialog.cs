@@ -89,6 +89,7 @@ namespace ContosoBot.Dialogs
                 }
             }
 
+            //TODO: Use scorables to handle 'quit'
             if (message.Text == "quit")
             {
                 context.Fail(new Exception("User quit"));
@@ -96,6 +97,7 @@ namespace ContosoBot.Dialogs
             else if (selectedAccount != null)
             {
                 //await context.PostAsync($"{selectedAccount.Name} selected");
+                context.ConversationData.SetValue("Account", selectedAccount);
                 context.Done(selectedAccount);
             }
             else

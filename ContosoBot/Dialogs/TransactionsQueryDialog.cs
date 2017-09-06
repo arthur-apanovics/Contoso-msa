@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using ContosoBot.Models;
 using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Internals;
-using Microsoft.Bot.Builder.FormFlow;
-using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
-using Newtonsoft.Json;
 
 namespace ContosoBot.Dialogs
 {
@@ -28,10 +18,13 @@ namespace ContosoBot.Dialogs
             _entityProps = new EntityAssigner().AssignEntities(luisResult);
         }
 
-        public Task StartAsync(IDialogContext context)
+        public async Task StartAsync(IDialogContext context)
         {
-            context.Call(new AccountSelectDialog(), PerformTransactionQuery);
-            return Task.CompletedTask;
+            if (!context.ConversationData.TryGetValue("Account", out _selectedAccount))
+                context.Call(new AccountSelectDialog(), PerformTransactionQuery);
+            else
+                await context.PostAsync($"Using {_selectedAccount.Name} account. Type 'select account' to change");
+                await PerformTransactionQuery(context, new AwaitableFromItem<object>(_selectedAccount));
         }
 
         private async Task PerformTransactionQuery (IDialogContext context, IAwaitable<object> result)

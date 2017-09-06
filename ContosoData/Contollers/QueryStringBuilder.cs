@@ -87,13 +87,8 @@ namespace ContosoData.Contollers
                 query += entities.Currency;
             }
 
-            //check if sql query ends with 'AND' or 'WHERE ' and return
-            if (query.EndsWith("AND "))
-                query = query.TrimEnd("AND ".ToCharArray());
-            else if (query.EndsWith("WHERE "))
-                query += "DateTime = (SELECT max(DateTime) FROM Transactions)";
-
-            return query;
+            //check if sql query ends with 'AND '
+            return query.EndsWith("AND ") ? query.TrimEnd("AND ".ToCharArray()) : query;
         }
     }
 }
