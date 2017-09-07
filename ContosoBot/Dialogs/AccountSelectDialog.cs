@@ -31,7 +31,7 @@ namespace ContosoBot.Dialogs
             reply.InputHint        = InputHints.ExpectingInput;
             reply.Attachments      = GetAccountAttachments();
 
-            if (!context.ConversationData.TryGetValue(ConversationStrings.ActiveAccount, out _currentAccount))
+            if (!context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _currentAccount))
                 await context.PostAsync("Please select account to work with:");
             else
                 await context.PostAsync($"**{_currentAccount.Name}** is the current active account. Select new account to work with:");
@@ -101,7 +101,7 @@ namespace ContosoBot.Dialogs
             else if (selectedAccount != null)
             {
                 await context.PostAsync($"{selectedAccount.Name} selected");
-                context.ConversationData.SetValue(ConversationStrings.ActiveAccount, selectedAccount);
+                context.ConversationData.SetValue(DataStrings.ActiveAccount, selectedAccount);
                 context.Done(selectedAccount);
             }
             else

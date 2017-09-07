@@ -5,7 +5,7 @@ using System.Web;
 
 namespace ContosoBot
 {
-    public static class ConversationStrings
+    public static class DataStrings
     {
         public static string Name = "Name";
         public static string ActiveAccount = "ActiveAccount";

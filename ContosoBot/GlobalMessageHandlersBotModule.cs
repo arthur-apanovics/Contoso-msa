@@ -21,6 +21,11 @@ namespace ContosoBot
                 .Register(c => new HelpScorable(c.Resolve<IDialogStack>()))
                 .As<IScorable<IActivity, double>>()
                 .InstancePerLifetimeScope();
+
+            builder
+                .Register(c => new NameChangeScorable(c.Resolve<IDialogStack>()))
+                .As<IScorable<IActivity, double>>()
+                .InstancePerLifetimeScope();
         }
     }
 }

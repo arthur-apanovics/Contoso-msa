@@ -11,7 +11,8 @@ namespace ContosoBot.Dialogs
                                      "* Checking account information  \n" +
                                      "* Viewing transaction history  \n" +
                                      "\nSome tips:\n\n" +
-                                     "* Type 'select account' to change the active account  \n" +
+                                     "* Type '*select account*' to change the active account  \n" +
+                                     "* Type '*change name*' to fix a typo in your name  \n" +
                                      "* Even though my heart is made of transistors, you can still talk to me like you would to a human";
 
         public async Task StartAsync(IDialogContext context)

@@ -123,14 +123,16 @@
     <Compile Include="ActivityLogger.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="ConversationStrings.cs" />
+    <Compile Include="DataStrings.cs" />
     <Compile Include="Dialogs\AccountQueryDialog.cs" />
     <Compile Include="Dialogs\AccountSelectDialog.cs" />
     <Compile Include="Dialogs\FaqDialog.cs" />
     <Compile Include="Dialogs\LuisDialog.cs" />
+    <Compile Include="Dialogs\NameChangeDialog.cs" />
     <Compile Include="Dialogs\PaymentsDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Dialogs\HelpDialog.cs" />
+    <Compile Include="Dialogs\Scorables\NameChangeScorable.cs" />
     <Compile Include="Dialogs\Scorables\HelpScorable.cs" />
     <Compile Include="Dialogs\TransactionsQueryDialog.cs" />
     <Compile Include="EntityAssigner.cs" />

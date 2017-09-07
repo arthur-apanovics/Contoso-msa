@@ -47,7 +47,7 @@ namespace ContosoBot.Dialogs.Scorables
             if (message == null)
                 return null;
 
-            var messageText = message.Text;
+            var messageText = message.Text.ToLower();
 
             return messageText == "help" ? "helpScorable-triggered" : null;
         }

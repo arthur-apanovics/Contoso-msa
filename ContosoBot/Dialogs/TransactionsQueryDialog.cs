@@ -20,7 +20,7 @@ namespace ContosoBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
-            if (!context.ConversationData.TryGetValue(ConversationStrings.ActiveAccount, out _selectedAccount))
+            if (!context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _selectedAccount))
                 context.Call(new AccountSelectDialog(), PerformTransactionQuery);
             else
             {

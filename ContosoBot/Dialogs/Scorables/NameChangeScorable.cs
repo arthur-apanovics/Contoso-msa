@@ -8,11 +8,11 @@ using Microsoft.Bot.Connector;
 
 namespace ContosoBot.Dialogs.Scorables
 {
-    public class AccountScorable : ScorableBase<IActivity, string, double>
+    public class NameChangeScorable : ScorableBase<IActivity, string, double>
     {
         private readonly IDialogStack _stack;
 
-        public AccountScorable(IDialogStack stack)
+        public NameChangeScorable(IDialogStack stack)
         {
             SetField.NotNull(out _stack, nameof(stack), stack);
         }
@@ -24,18 +24,18 @@ namespace ContosoBot.Dialogs.Scorables
 
         protected override double GetScore(IActivity item, string state)
         {
-            return state != null && state == "accountScorable-triggered" ? 1 : 0;
+            return state != null && state == "helpScorable-triggered" ? 1 : 0;
         }
 
         protected override bool HasScore(IActivity item, string state)
         {
-            return state != null && state == "accountScorable-triggered";
+            return state != null && state == "helpScorable-triggered";
         }
 
         protected override Task PostAsync(IActivity item, string state, CancellationToken token)
         {
             var message = item as IMessageActivity;
-            var dialog = new AccountSelectDialog();
+            var dialog = new NameChangeDialog();
             var interruption = dialog.Void(_stack);
             _stack.Call(interruption, null);
             return Task.CompletedTask;
@@ -49,7 +49,7 @@ namespace ContosoBot.Dialogs.Scorables
 
             var messageText = message.Text.ToLower();
 
-            return messageText == "select account" ? "accountScorable-triggered" : null;
+            return messageText == "change name" ? "helpScorable-triggered" : null;
         }
     }
 }
