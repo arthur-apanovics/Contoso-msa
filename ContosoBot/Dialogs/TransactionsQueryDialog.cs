@@ -20,26 +20,26 @@ namespace ContosoBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
-            if (!context.ConversationData.TryGetValue("Account", out _selectedAccount))
+            if (!context.ConversationData.TryGetValue(ConversationStrings.ActiveAccount, out _selectedAccount))
                 context.Call(new AccountSelectDialog(), PerformTransactionQuery);
             else
-                await context.PostAsync($"Using {_selectedAccount.Name} account. Type 'select account' to change");
+            {
+                await context.PostAsync($"Using **{_selectedAccount.Name}** account, type *'select account'* to change");
                 await PerformTransactionQuery(context, new AwaitableFromItem<object>(_selectedAccount));
+            }
         }
 
         private async Task PerformTransactionQuery (IDialogContext context, IAwaitable<object> result)
         {
-            var selection = await result;
+            var selection    = await result;
             _selectedAccount = selection as Account;
-
-            //check if enough info was supplied to create an entity collection for query
-            if (_entityProps == null)
-                await context.PostAsync("Sorry, you didn't supply enough information. Showing 5 latest transactions");
+            string output    = String.Empty;
 
             var queryResult = 
                 AccountDataController.GetTransactionsFromEntities(_selectedAccount, _entityProps);
 
-            string output = String.Empty;
+            //check if enough info was supplied to create an entity collection for query
+            output += _entityProps == null ? "Sorry, you didn't supply enough information, showing latest 5 transactions:" : "";
 
             foreach (var transaction in queryResult)
             {
