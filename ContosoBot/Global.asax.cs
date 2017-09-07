@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Routing;
+﻿using System.Web.Http;
 using Autofac;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Internals.Fibers;
 
 namespace ContosoBot
 {
@@ -24,10 +20,15 @@ namespace ContosoBot
                     .ForMember(dest => dest.RecipientName, opt => opt.MapFrom(src => src.Recipient.Name));
             });
 
+            
+            var builder = new ContainerBuilder();
+
             //TODO: Uncomment to enable logging.
-            //var builder = new ContainerBuilder();
             //builder.RegisterType<ActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
-            //builder.Update(Conversation.Container);
+
+            builder.RegisterModule(new ReflectionSurrogateModule());
+            builder.RegisterModule<GlobalMessageHandlersBotModule>();
+            builder.Update(Conversation.Container);
         }
     }
 }

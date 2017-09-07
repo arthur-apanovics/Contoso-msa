@@ -10,15 +10,8 @@ namespace ContosoBot.Dialogs
     [Serializable]
     public class RootDialog : IDialog<object>
     {
-        //private const string HelpMessage = "Here's what I can help you with:" +
-        //                                   "\n * Checking account information" +
-        //                                   "\n * Making payments and transfers" +
-        //                                   "\n * Viewing payment and transfer history";
-
-        private const string HelpMessage = "Here's what's working right now:" +
-                                           "\n * Checking account information" +
-                                           "\n * Viewing transaction history" +
-                                           "\n\n **NEW!** Natural language support (LUIS)";
+        private const string WelcomeMessage = "\n\nLet me know what you would like to do." +
+                                              "\n\nHint - type '*help*' if you need more information.";
         private string _userName;
         private bool _userWelcomed;
         
@@ -40,7 +33,7 @@ namespace ContosoBot.Dialogs
                 }
                 else
                 {
-                    await context.PostAsync($"**Welcome back, {_userName}**. {HelpMessage}");
+                    await context.PostAsync($"**Welcome back, {_userName}**. {WelcomeMessage}");
                     _userWelcomed = true;
 
                     context.Call(new LuisDialog(), ResumeAfterLuis);
@@ -58,7 +51,7 @@ namespace ContosoBot.Dialogs
             var userName = await result;
             _userWelcomed = true;
 
-            await context.PostAsync($"**Hello, {userName}!** {HelpMessage}");
+            await context.PostAsync($"**Hello, {userName}!** {WelcomeMessage}");
 
             context.UserData.SetValue("Name", userName);
 

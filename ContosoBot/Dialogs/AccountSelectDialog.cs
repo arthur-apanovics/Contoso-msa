@@ -14,6 +14,7 @@ namespace ContosoBot.Dialogs
     public class AccountSelectDialog : IDialog
     {
         private readonly IEnumerable<Account> _accounts;
+        private Account _currentAccount;
 
         public AccountSelectDialog()
         {
@@ -25,14 +26,17 @@ namespace ContosoBot.Dialogs
         {
             //await context.PostAsync("Just a moment, getting your accounts data...");
 
-            var reply = context.MakeMessage();
+            var reply              = context.MakeMessage();
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-            reply.InputHint = InputHints.ExpectingInput;
-            reply.Attachments = GetAccountAttachments();
+            reply.InputHint        = InputHints.ExpectingInput;
+            reply.Attachments      = GetAccountAttachments();
 
-            await context.PostAsync("Please select account to work with:");
+            if (!context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _currentAccount))
+                await context.PostAsync("Please select account to work with:");
+            else
+                await context.PostAsync($"**{_currentAccount.Name}** is the current active account. Select new account to work with:");
+
             await context.PostAsync(reply);
-
             context.Wait(MessageReceivedAsync);
         }
 
@@ -96,8 +100,8 @@ namespace ContosoBot.Dialogs
             }
             else if (selectedAccount != null)
             {
-                //await context.PostAsync($"{selectedAccount.Name} selected");
-                context.ConversationData.SetValue("Account", selectedAccount);
+                await context.PostAsync($"{selectedAccount.Name} selected");
+                context.ConversationData.SetValue(DataStrings.ActiveAccount, selectedAccount);
                 context.Done(selectedAccount);
             }
             else
