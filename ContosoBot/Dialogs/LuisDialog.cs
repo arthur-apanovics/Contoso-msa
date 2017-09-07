@@ -39,13 +39,14 @@ namespace ContosoBot.Dialogs
         [LuisIntent("QueryTransactionsByDates")]
         public async Task QueryTransactionsByDates(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Just a moment, getting your accounts data...");
+            await context.PostAsync("Just a moment, getting data...");
             context.Call(new TransactionsQueryDialog(result), Callback);
         }
 
         private async Task Callback(IDialogContext context, IAwaitable<object> result)
         {
-            await context.PostAsync("What would you like to do next?");
+            //TODO: make username accessible from a static class
+            await context.PostAsync("What would you like to do next" + (context.UserData.TryGetValue(DataStrings.Name, out string userName) ? $", {userName}?" : "?"));
             context.Wait(MessageReceived);
         }
     }

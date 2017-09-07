@@ -11,7 +11,7 @@ namespace ContosoBot.Dialogs
     public class TransactionsQueryDialog : IDialog
     {
         private Account _selectedAccount;
-        private EntityProps _entityProps;
+        private readonly EntityProps _entityProps;
 
         public TransactionsQueryDialog(LuisResult luisResult = null)
         {
