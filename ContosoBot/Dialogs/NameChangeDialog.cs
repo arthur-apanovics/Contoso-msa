@@ -29,6 +29,8 @@ namespace ContosoBot.Dialogs
             context.UserData.SetValue(DataStrings.Name, name);
 
             await context.PostAsync($"OK {name}, your name has been updated.");
+
+            context.Done(true);
         }
     }
 }

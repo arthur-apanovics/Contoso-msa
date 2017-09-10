@@ -134,6 +134,7 @@
     <Compile Include="Dialogs\Scorables\NameChangeScorable.cs" />
     <Compile Include="Dialogs\Scorables\HelpScorable.cs" />
     <Compile Include="Dialogs\TransactionsQueryDialog.cs" />
+    <Compile Include="Dialogs\TransferDialog.cs" />
     <Compile Include="EntityAssigner.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

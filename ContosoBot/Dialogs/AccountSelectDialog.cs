@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chronic;
 using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
@@ -15,11 +16,13 @@ namespace ContosoBot.Dialogs
     {
         private readonly IEnumerable<Account> _accounts;
         private Account _currentAccount;
+        private bool _saveGlobally;
 
-        public AccountSelectDialog()
+        public AccountSelectDialog(bool saveGlobally = true)
         {
             // have to convert to a list, otherwise get a serialization error (?!)
             _accounts = AccountDataController.Accounts.ToList();
+            _saveGlobally = saveGlobally;
         }
 
         public async Task StartAsync(IDialogContext context)
@@ -31,8 +34,8 @@ namespace ContosoBot.Dialogs
             reply.InputHint        = InputHints.ExpectingInput;
             reply.Attachments      = GetAccountAttachments();
 
-            if (!context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _currentAccount))
-                await context.PostAsync("Please select account to work with:");
+            if (!context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _currentAccount) || !_saveGlobally)
+                await context.PostAsync("Select account:");
             else
                 await context.PostAsync($"**{_currentAccount.Name}** is the current active account. Select new account to work with:");
 
@@ -40,7 +43,7 @@ namespace ContosoBot.Dialogs
             context.Wait(MessageReceivedAsync);
         }
 
-        private IList<Attachment> GetAccountAttachments()
+        public IList<Attachment> GetAccountAttachments()
         {
             var result = new List<Attachment>();
 
@@ -49,10 +52,10 @@ namespace ContosoBot.Dialogs
                 result.Add(
                     new ThumbnailCard()
                     {
-                        Title = account.Name,
+                        Title    = account.Name,
                         Subtitle = account.Number,
-                        //Text = $"Type: {account.Type}, Overdraft limit: {account.OverdraftLimit:C}, Balance: {account.Balance:C}",
-                        Buttons = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account) }
+                        //Text   = $"Type: {account.Type}, Overdraft limit: {account.OverdraftLimit:C}, Balance: {account.Balance:C}",
+                        Buttons  = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account) }
                     }
                     .ToAttachment()
                 );
@@ -80,7 +83,7 @@ namespace ContosoBot.Dialogs
                     Console.WriteLine(e.Message);
                 }
             }
-            else if(!string.IsNullOrEmpty(message.Text))
+            else if (!string.IsNullOrEmpty(message.Text))
             {
                 //Check if user typed name of account instead.
                 foreach (var account in _accounts)
@@ -90,23 +93,34 @@ namespace ContosoBot.Dialogs
                         selectedAccount = account;
                         break;
                     }
+
+                    //TODO: Use scorables to handle 'quit'
+                    if (message.Text == "quit")
+                    {
+                        context.Fail(new Exception("User quit"));
+                        return;
+                    }
                 }
             }
 
-            //TODO: Use scorables to handle 'quit'
-            if (message.Text == "quit")
+            if (selectedAccount != null)
             {
-                context.Fail(new Exception("User quit"));
-            }
-            else if (selectedAccount != null)
-            {
+                if (_saveGlobally)
+                    context.ConversationData.SetValue(DataStrings.ActiveAccount, selectedAccount);
+
                 await context.PostAsync($"{selectedAccount.Name} selected");
-                context.ConversationData.SetValue(DataStrings.ActiveAccount, selectedAccount);
                 context.Done(selectedAccount);
             }
             else
             {
-                await context.PostAsync("Sorry, no account with that name. Please try again");
+                var options = string.Empty;
+
+                foreach (var account in _accounts)
+                {
+                    options += $"* {account.Name}  \n";
+                }
+
+                await context.PostAsync($"Sorry, no account with that name. Options are:\n{options}\n\nPlease try again");
                 context.Wait(MessageReceivedAsync);
             }
         }

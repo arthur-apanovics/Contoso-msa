@@ -36,13 +36,9 @@ namespace ContosoData.Contollers
                         
                         //further additions to the query will not change the result. Return the query and done.
                         return query;
-
-                    default:
-                        query += "* FROM Transactions WHERE ";
-                        break;
                 }
             }
-            else
+            else if (entities.DateRange != null)
             {
                 query += "* FROM Transactions WHERE ";
 
@@ -63,6 +59,10 @@ namespace ContosoData.Contollers
                 //recepient
                 //DONE: Support partial names
                 query += string.IsNullOrEmpty(entities.Encyclopedia) ? "" : $"RecepientName LIKE '%{entities.Encyclopedia}%' AND ";
+            }
+            else
+            {
+                query += "* FROM Transactions WHERE ";
             }
 
             //currency (amount of transaction)
