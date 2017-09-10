@@ -126,7 +126,6 @@
     <Compile Include="DataStrings.cs" />
     <Compile Include="Dialogs\AccountQueryDialog.cs" />
     <Compile Include="Dialogs\AccountSelectDialog.cs" />
-    <Compile Include="Dialogs\FaqDialog.cs" />
     <Compile Include="Dialogs\LuisDialog.cs" />
     <Compile Include="Dialogs\NameChangeDialog.cs" />
     <Compile Include="Dialogs\PaymentsDialog.cs" />
@@ -135,8 +134,8 @@
     <Compile Include="Dialogs\Scorables\NameChangeScorable.cs" />
     <Compile Include="Dialogs\Scorables\HelpScorable.cs" />
     <Compile Include="Dialogs\TransactionsQueryDialog.cs" />
+    <Compile Include="Dialogs\TransferDialog.cs" />
     <Compile Include="EntityAssigner.cs" />
-    <Compile Include="Forms\AccountQuery.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -162,6 +161,9 @@
       <Project>{76f21739-f448-4e12-8705-efa5f46bab1d}</Project>
       <Name>ContosoData</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Forms\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

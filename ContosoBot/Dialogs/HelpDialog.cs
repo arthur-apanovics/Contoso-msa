@@ -13,6 +13,7 @@ namespace ContosoBot.Dialogs
                                      "\nSome tips:\n\n" +
                                      "* Type '*select account*' to change the active account  \n" +
                                      "* Type '*change name*' to fix a typo in your name  \n" +
+                                     "* Type '*quit*' to exit from a dialog  \n" +
                                      "* Even though my heart is made of transistors, you can still talk to me like you would to a human";
 
         public async Task StartAsync(IDialogContext context)
@@ -20,20 +21,6 @@ namespace ContosoBot.Dialogs
             await context.PostAsync(HelpMessage);
 
             context.Done(true);
-        }
-
-        private async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> result)
-        {
-            var message = await result;
-
-            if ((message.Text != null) && (message.Text.Trim().Length > 0))
-            {
-                context.Done<object>(null);
-            }
-            else
-            {
-                context.Fail(new Exception("Message was not a string or was an empty string."));
-            }
         }
     }
 }

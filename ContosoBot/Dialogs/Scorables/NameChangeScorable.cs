@@ -44,7 +44,7 @@ namespace ContosoBot.Dialogs.Scorables
         protected override async Task<string> PrepareAsync(IActivity item, CancellationToken token)
         {
             var message = item.AsMessageActivity();
-            if (message == null)
+            if (message?.Text == null)
                 return null;
 
             var messageText = message.Text.ToLower();

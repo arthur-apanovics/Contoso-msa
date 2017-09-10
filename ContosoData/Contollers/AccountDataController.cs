@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,9 +37,39 @@ namespace ContosoData.Contollers
 
         public static IEnumerable<Transaction> GetTransactionsFromEntities(Account account, EntityProps entities)
         {
+            //TODO: Come up with a cleaner way of checking that enough info has been supplied
+            if (entities.DateRange == null &&
+                entities.Currency == 0 &&
+                string.IsNullOrEmpty(entities.Encyclopedia) &&
+                string.IsNullOrEmpty(entities.OrdinalTense))
+                    entities = null;
+
             var sql = new QueryStringBuilder().TransactionBuilder(account, entities);
             return _context.Transactions.SqlQuery(sql)
                 .OrderBy(t => t.DateTime);
+        }
+
+        public static bool PerformInternalTransfer(Account activeAccount, EntityProps entities)
+        {
+            try
+            {
+                var accountToDeduct = _context.Accounts
+                    .FirstOrDefault(a => a.Id == activeAccount.Id);
+                var accountToAdd = _context.Accounts
+                    .FirstOrDefault(a => a.Id == entities.Account.Id);
+
+                accountToDeduct.Balance -= entities.Currency;
+                accountToAdd.Balance += entities.Currency;
+
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
     }
 }

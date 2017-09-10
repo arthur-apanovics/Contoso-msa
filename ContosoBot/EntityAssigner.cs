@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using ContosoBot.Models;
+using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
@@ -18,7 +19,7 @@ namespace ContosoBot
     {
         public EntityProps AssignEntities(LuisResult luisResult)
         {
-            EntityProps entityProps = new EntityProps();
+            var entityProps = new EntityProps();
 
             //Resolve LUIS entities
             foreach (var entity in luisResult.Entities)
@@ -102,15 +103,25 @@ namespace ContosoBot
                     case "ordinalTense::first":
                         entityProps.OrdinalTense = "first";
                         break;
-                }
-            }
 
-            if (entityProps.DateRange == null
-                && entityProps.Currency == 0
-                && string.IsNullOrEmpty(entityProps.Encyclopedia)
-                && string.IsNullOrEmpty(entityProps.OrdinalTense))
-            {
-                return null;
+                    case "account":
+                        var trimmedEntity = entity.Score >= 0.7 ? entity.Entity.ToLower().Replace("account", "").Trim() : null;
+
+                        if (string.IsNullOrEmpty(trimmedEntity))
+                            break;
+
+                        var accounts = AccountDataController.Accounts.ToList();
+                        foreach (var account in accounts)
+                        {
+                            if (string.Equals(account.Name, trimmedEntity, StringComparison.CurrentCultureIgnoreCase) || 
+                                string.Equals(account.Type, trimmedEntity, StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                entityProps.Account = account;
+                                break;
+                            }
+                        }
+                        break;
+                }
             }
 
             return entityProps;

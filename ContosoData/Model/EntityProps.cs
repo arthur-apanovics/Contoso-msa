@@ -9,6 +9,7 @@ namespace ContosoData.Model
     [Serializable]
     public class EntityProps
     {
+        public Account Account { get; set; }
         public string Encyclopedia { get; set; }
         public float Currency { get; set; }
         public int Ordinal { get; set; }
