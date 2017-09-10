@@ -49,6 +49,12 @@ namespace ContosoBot.Dialogs
             context.Call(new TransferDialog(result), Callback);
         }
 
+        [LuisIntent("QueryExchangeRate")]
+        public async Task QueryExchangeRate(IDialogContext context, LuisResult result)
+        {
+            context.Call(new ExchangeRateDialog(result), Callback);
+        }
+
         private async Task Callback(IDialogContext context, IAwaitable<object> result)
         {
             //TODO: make username accessible from a static class
