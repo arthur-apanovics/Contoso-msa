@@ -39,7 +39,7 @@ namespace ContosoData.Contollers
         {
             //TODO: Come up with a cleaner way of checking that enough info has been supplied
             if (entities.DateRange == null &&
-                entities.Currency == 0 &&
+                entities.MoneyAmount == 0 &&
                 string.IsNullOrEmpty(entities.Encyclopedia) &&
                 string.IsNullOrEmpty(entities.OrdinalTense))
                     entities = null;
@@ -58,8 +58,8 @@ namespace ContosoData.Contollers
                 var accountToAdd = _context.Accounts
                     .FirstOrDefault(a => a.Id == entities.Account.Id);
 
-                accountToDeduct.Balance -= entities.Currency;
-                accountToAdd.Balance += entities.Currency;
+                accountToDeduct.Balance -= entities.MoneyAmount;
+                accountToAdd.Balance += entities.MoneyAmount;
 
                 _context.SaveChanges();
 

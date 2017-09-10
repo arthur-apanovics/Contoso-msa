@@ -11,7 +11,9 @@ namespace ContosoData.Model
     {
         public Account Account { get; set; }
         public string Encyclopedia { get; set; }
-        public float Currency { get; set; }
+        //TODO: Create seperate class to hold MoneyAmount and MoneyCurrency
+        public float MoneyAmount { get; set; }
+        public string MoneyCurrency { get; set; }
         public int Ordinal { get; set; }
         public float Percentage { get; set; }
         public string OrdinalTense { get; set; }

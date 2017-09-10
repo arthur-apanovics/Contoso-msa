@@ -66,7 +66,7 @@ namespace ContosoData.Contollers
             }
 
             //currency (amount of transaction)
-            if (entities.Currency != 0)
+            if (entities.MoneyAmount != 0)
             {
                 query += "Amount ";
 
@@ -84,7 +84,7 @@ namespace ContosoData.Contollers
                         break;
                 }
 
-                query += entities.Currency;
+                query += entities.MoneyAmount;
             }
 
             //check if sql query ends with 'AND '
