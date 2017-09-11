@@ -26,12 +26,12 @@ namespace ContosoBot.Dialogs
 
             if (_entityProps.MoneyCurrency.Count >= 2)
             {
-                var baseCurrency   = _entityProps.MoneyCurrency[0];
+                var baseCurrency = _entityProps.MoneyCurrency[0];
                 var targetCurrency = _entityProps.MoneyCurrency[1];
 
                 if (_entityProps.MoneyAmount != 0)
                 {
-                    var amount          = _entityProps.MoneyAmount;
+                    var amount = _entityProps.MoneyAmount;
                     var convertedResult = currencyOperations.ConvertCurrency(baseCurrency, targetCurrency, amount);
 
                     await context.PostAsync(
@@ -48,12 +48,14 @@ namespace ContosoBot.Dialogs
             else if (_entityProps.MoneyCurrency.Count == 1)
             {
                 var baseCurrency = _entityProps.MoneyCurrency[0];
-                var rate         = currencyOperations.GetExchangeRate(baseCurrency);
+                var rate = currencyOperations.GetExchangeRate(baseCurrency);
                 await PrintResults(context, rate);
             }
             else
             {
                 //TODO: Currency form
+                await context.PostAsync("Sorry, not enough inforamtion supplied. Please be more specific.");
+                context.Done(false);
             }
         }
 
@@ -66,12 +68,14 @@ namespace ContosoBot.Dialogs
             foreach (var rate in rates.Rates.GetType().GetProperties())
             {
                 var propValue = rate.GetValue(rates.Rates);
-                if ((float) propValue == 0) continue; 
+                if ((float)propValue == 0) continue;
 
                 result.Append($"{propValue} {rate.Name}  \n");
             }
 
             await context.PostAsync(result.ToString());
+
+            context.Done(true);
         }
     }
 }
