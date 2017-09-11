@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ContosoData.Model
 {
-    class ExchangeRate
+    public class ExchangeRate
     {
             public string Base { get; set; }
             public string Date { get; set; }
@@ -46,115 +46,6 @@ namespace ContosoData.Model
             public float USD { get; set; }
             public float ZAR { get; set; }
             public float EUR { get; set; }
-        }
-
-    class CurrencyOperations
-    {
-        private string GetCurrencyAbbreviation(string currency)
-        {
-            var abbreviation = string.Empty;
-
-            switch (currency)
-            {
-                case "Australian dollar":
-                    abbreviation = "AUD";
-                    break;
-                case "Bulgarian lev":
-                    abbreviation = "BGN";
-                    break;
-                case "Brazilian real":
-                    abbreviation = "BRL";
-                    break;
-                case "Canadian dollar":
-                    abbreviation = "CAD";
-                    break;
-                case "Swiss franc":
-                    abbreviation = "CHF";
-                    break;
-                case "Chinese yuan":
-                    abbreviation = "CNY";
-                    break;
-                case "Czech koruna":
-                    abbreviation = "CZK";
-                    break;
-                case "Danish krone":
-                    abbreviation = "DKK";
-                    break;
-                case "British pound":
-                    abbreviation = "GBP";
-                    break;
-                case "Hong Kong dollar":
-                    abbreviation = "HKD";
-                    break;
-                case "Croatian kuna":
-                    abbreviation = "HRK";
-                    break;
-                case "Hungarian forint":
-                    abbreviation = "HUF";
-                    break;
-                case "Indonesian rupiah":
-                    abbreviation = "IDR";
-                    break;
-                case "Israeli new shekel":
-                    abbreviation = "ILS";
-                    break;
-                case "Indian rupee":
-                    abbreviation = "INR";
-                    break;
-                case "Japanese yen":
-                    abbreviation = "JPY";
-                    break;
-                case "South Korean won":
-                    abbreviation = "KRW";
-                    break;
-                case "Mexican peso":
-                    abbreviation = "MXN";
-                    break;
-                case "Malaysian ringgit":
-                    abbreviation = "MYR";
-                    break;
-                case "Norwegian krone":
-                    abbreviation = "NOK";
-                    break;
-                case "Philippine peso":
-                    abbreviation = "PHP";
-                    break;
-                case "Polish złoty":
-                    abbreviation = "PLN";
-                    break;
-                case "Romanian leu":
-                    abbreviation = "RON";
-                    break;
-                case "Russian ruble":
-                    abbreviation = "RUB";
-                    break;
-                case "Swedish krona":
-                    abbreviation = "SEK";
-                    break;
-                case "Singapore dollar":
-                    abbreviation = "SGD";
-                    break;
-                case "Thai baht":
-                    abbreviation = "THB";
-                    break;
-                case "":
-                    abbreviation = "TRY";
-                    break;
-                case "United States dollar":
-                    abbreviation = "USD";
-                    break;
-                case "South African rand":
-                    abbreviation = "ZAR";
-                    break;
-                case "Euro":
-                    abbreviation = "EUR";
-                    break;
-                default:
-                    abbreviation = "NZD";
-                    break;
-            }
-
-            return abbreviation;
-        }
+            public float NZD { get; set; }
     }
 }

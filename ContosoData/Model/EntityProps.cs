@@ -13,7 +13,7 @@ namespace ContosoData.Model
         public string Encyclopedia { get; set; }
         //TODO: Create seperate class to hold MoneyAmount and MoneyCurrency
         public float MoneyAmount { get; set; }
-        public string MoneyCurrency { get; set; }
+        public List<string> MoneyCurrency { get; set; }
         public int Ordinal { get; set; }
         public float Percentage { get; set; }
         public string OrdinalTense { get; set; }
@@ -23,6 +23,7 @@ namespace ContosoData.Model
         public EntityProps()
         {
             //DateRange = new DateRange();
+            MoneyCurrency = new List<string>();
         }
     }
 }

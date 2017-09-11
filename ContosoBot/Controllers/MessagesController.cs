@@ -21,7 +21,7 @@ namespace ContosoBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                var test = new ExchangeRateApiController();
+                var test = new ExchangeRateController();
 
                 var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 Activity isTypingReply = activity.CreateReply();
