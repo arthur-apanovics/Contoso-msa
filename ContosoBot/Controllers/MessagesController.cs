@@ -49,7 +49,7 @@ namespace ContosoBot
             {
                 if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
                 {
-                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.4. Say Hi to the bot");
+                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.5. Say Hi to the bot");
 
                     ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
 

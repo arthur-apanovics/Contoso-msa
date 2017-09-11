@@ -10,6 +10,7 @@ namespace ContosoBot.Dialogs
         private const string HelpMessage = "Here's what I can help you with:  \n" +
                                      "* Checking account information  \n" +
                                      "* Viewing transaction history  \n" +
+                                     "* Converting and viewing currency rates  \n" +
                                      "\nSome tips:\n\n" +
                                      "* Type '*select account*' to change the active account  \n" +
                                      "* Type '*change name*' to fix a typo in your name  \n" +
