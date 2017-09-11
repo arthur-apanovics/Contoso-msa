@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using Autofac;
+using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Internals.Fibers;
@@ -20,7 +21,6 @@ namespace ContosoBot
                     .ForMember(dest => dest.RecipientName, opt => opt.MapFrom(src => src.Recipient.Name));
             });
 
-            
             var builder = new ContainerBuilder();
 
             //TODO: Uncomment to enable logging.

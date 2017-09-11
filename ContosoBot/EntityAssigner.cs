@@ -78,8 +78,14 @@ namespace ContosoBot
                         break;
 
                     case "builtin.currency":
-                        float.TryParse(entity.Resolution["value"].ToString(), out var parsedCurrency);
-                        entityProps.Currency = parsedCurrency;
+                        float.TryParse(entity.Resolution["value"]?.ToString(), out var parsedCurrency);
+                        entityProps.MoneyAmount = entityProps.MoneyAmount == 0 ? parsedCurrency : entityProps.MoneyAmount;
+
+                            entityProps.MoneyCurrency.Add(
+                                entity.Resolution["unit"]?
+                                .ToString()
+                                .ToLower()
+                                );
                         break;
 
                     //comparison operators. 

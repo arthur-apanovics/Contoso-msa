@@ -31,12 +31,12 @@ namespace ContosoBot.Dialogs
             context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _selectedAccount);
 
             //all info supplied ?
-            if (_entityProps.Account != null && _entityProps.Currency != 0 &&
+            if (_entityProps.Account != null && _entityProps.MoneyAmount != 0 &&
                 _selectedAccount != null)
             {
                 await ValidateAccounts(context);
             }
-            else if (_entityProps.Account != null && _entityProps.Currency != 0 &&
+            else if (_entityProps.Account != null && _entityProps.MoneyAmount != 0 &&
                      _selectedAccount == null)
             {
                 await context.PostAsync("Please choose source account");
@@ -68,7 +68,7 @@ namespace ContosoBot.Dialogs
             else
             {
                 PromptDialog.Confirm(context, ResumeAfterConfirmationPrompt,
-                    $"OK, transfer **{_entityProps.Currency:C}** from **{_selectedAccount.Name}** to **{_entityProps.Account.Name}**?");
+                    $"OK, transfer **{_entityProps.MoneyAmount:C}** from **{_selectedAccount.Name}** to **{_entityProps.Account.Name}**?");
             }
         }
 
