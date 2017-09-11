@@ -55,7 +55,7 @@ namespace ContosoBot.Dialogs
                         Title    = account.Name,
                         Subtitle = account.Number,
                         //Text   = $"Type: {account.Type}, Overdraft limit: {account.OverdraftLimit:C}, Balance: {account.Balance:C}",
-                        Buttons  = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account) }
+                        Buttons  = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account.Name) } //return account name for Slack and Skype compatibility
                     }
                     .ToAttachment()
                 );
