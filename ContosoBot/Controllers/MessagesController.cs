@@ -21,15 +21,20 @@ namespace ContosoBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                var test = new ExchangeRateController();
+                if (activity.Text == ".delete")
+                {
+                    activity.Type = ActivityTypes.DeleteUserData;
+                    HandleSystemMessage(activity);
+                }
+                else
+                { 
+                    var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    Activity isTypingReply = activity.CreateReply();
+                    isTypingReply.Type = ActivityTypes.Typing;
+                    await connector.Conversations.ReplyToActivityAsync(isTypingReply);
 
-                var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                Activity isTypingReply = activity.CreateReply();
-                isTypingReply.Type = ActivityTypes.Typing;
-                await connector.Conversations.ReplyToActivityAsync(isTypingReply);
-
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
-                //await Conversation.SendAsync(activity, () => new Dialogs.LuisDialog());
+                    await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                }
             }
             else
             {
@@ -43,13 +48,19 @@ namespace ContosoBot
         {
             if (message.Type == ActivityTypes.DeleteUserData)
             {
-                //TODO
+                message.GetStateClient().BotState
+                    .DeleteStateForUserWithHttpMessagesAsync(message.ChannelId, message.From.Id);
+
+                var client = new ConnectorClient(new Uri(message.ServiceUrl));
+                var clearMsg = message.CreateReply();
+                clearMsg.Text = $"Resetting everything for conversation: {message.Conversation.Id}";
+                client.Conversations.SendToConversationAsync(clearMsg);
             }
             else if (message.Type == ActivityTypes.ConversationUpdate)
             {
                 if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
                 {
-                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.5. Say Hi to the bot");
+                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.5  \nSay Hi to the bot");
 
                     ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
 
