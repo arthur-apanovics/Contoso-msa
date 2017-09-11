@@ -40,7 +40,7 @@ namespace ContosoBot.Dialogs
         public async Task QueryTransactionsByDates(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Just a moment, getting data...");
-            context.Call(new TransferDialog(result), Callback);
+            context.Call(new TransactionsQueryDialog(result), Callback);
         }
 
         [LuisIntent("Transfer")]

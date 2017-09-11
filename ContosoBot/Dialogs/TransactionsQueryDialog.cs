@@ -39,8 +39,9 @@ namespace ContosoBot.Dialogs
                 AccountDataController.GetTransactionsFromEntities(_selectedAccount, _entityProps);
 
             //check if enough info was supplied to create an entity collection for query
-            output += _entityProps == null ? "Sorry, you didn't supply enough information, showing latest 5 transactions:" : "";
-
+            output += !EntityPropsEnoughInfoCheck(_entityProps) ? 
+                "Sorry, you didn't supply enough information, showing latest 5 transactions:" : "";
+            
             foreach (var transaction in queryResult)
             {
                 output +=
@@ -50,6 +51,25 @@ namespace ContosoBot.Dialogs
             await context.PostAsync(String.IsNullOrWhiteSpace(output) ? "Sorry, no transactions found" : output);
 
             context.Done(true);
+        }
+
+        /// <summary>
+        /// Checks if enough entities have been supplied to build an sql query. 
+        /// Returns false if not enough informationhas been supplied
+        /// </summary>
+        /// <param name="props"></param>
+        /// <returns></returns>
+        private bool EntityPropsEnoughInfoCheck(EntityProps props)
+        {
+            if (props.DateRange == null
+                && props.MoneyAmount == 0
+                && string.IsNullOrEmpty(props.Encyclopedia)
+                && string.IsNullOrEmpty(props.OrdinalTense))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
