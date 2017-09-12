@@ -35,7 +35,7 @@ namespace ContosoBot.Dialogs
                     var convertedResult = currencyOperations.ConvertCurrency(baseCurrency, targetCurrency, amount);
 
                     await context.PostAsync(
-                        $"{amount} {baseCurrency}'s is equal to {convertedResult} {targetCurrency}'s");
+                        $"{amount} {baseCurrency}'s are equal to {convertedResult} {targetCurrency}'s");
 
                     context.Done(true);
                 }
@@ -54,7 +54,7 @@ namespace ContosoBot.Dialogs
             else
             {
                 //TODO: Currency form
-                await context.PostAsync("Sorry, not enough inforamtion supplied. Please be more specific.");
+                await context.PostAsync("Sorry, not enough inforamtion supplied to view currency exchange. Please be more specific.");
                 context.Done(false);
             }
         }

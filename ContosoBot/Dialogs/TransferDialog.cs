@@ -105,7 +105,7 @@ namespace ContosoBot.Dialogs
         {
             var receiptCard = new ReceiptCard
             {
-                Title = "Funds Transfer",
+                Title = "Funds Transferred",
                 Facts = new List<Fact> { new Fact("Transfer from", activeAccount.Name), new Fact("Transfer to", props.Account.Name) },
                 Items = new List<ReceiptItem>
                 {

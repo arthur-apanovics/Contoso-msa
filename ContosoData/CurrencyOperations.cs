@@ -127,7 +127,7 @@ namespace ContosoData
                 case "japanese yen":
                     abbreviation = "JPY";
                     break;
-                case "south Korean won":
+                case "south korean won":
                     abbreviation = "KRW";
                     break;
                 case "mexican peso":
