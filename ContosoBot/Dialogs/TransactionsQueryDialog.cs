@@ -45,7 +45,7 @@ namespace ContosoBot.Dialogs
             foreach (var transaction in queryResult)
             {
                 output +=
-                    $"\n * {transaction.DateTime:d}: {transaction.Amount:C} transferred to {transaction.RecepientName}";
+                    $"\n * {transaction.DateTime:d}: {transaction.Amount:C} {(string.Equals(transaction.TransactionType, "deposit") ? "received from" : "transferred to")} {transaction.RecepientName}";
             }
 
             await context.PostAsync(String.IsNullOrWhiteSpace(output) ? "Sorry, no transactions found" : output);

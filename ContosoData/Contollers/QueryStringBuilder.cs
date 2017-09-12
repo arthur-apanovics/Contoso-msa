@@ -55,15 +55,15 @@ namespace ContosoData.Contollers
                         query += $"DateTime = '{entities.DateRange.Start:yyyy-MM-dd}' AND ";
                         break;
                 }
-
-                //recepient
-                //DONE: Support partial names
-                query += string.IsNullOrEmpty(entities.Encyclopedia) ? "" : $"RecepientName LIKE '%{entities.Encyclopedia}%' AND ";
             }
             else
             {
                 query += "* FROM Transactions WHERE ";
             }
+
+            //recepient
+            //DONE: Support partial names
+            query += string.IsNullOrEmpty(entities.Encyclopedia) ? "" : $"RecepientName LIKE '%{entities.Encyclopedia}%' AND ";
 
             //currency (amount of transaction)
             if (entities.MoneyAmount != 0)
@@ -87,8 +87,11 @@ namespace ContosoData.Contollers
                 query += entities.MoneyAmount;
             }
 
+            //return transactions that mach account id
+            query += query.EndsWith("AND ") ? $"AccountId = {account.Id}" : $" AND AccountId = {account.Id}";
+
             //check if sql query ends with 'AND '
-            return query.EndsWith("AND ") ? query.TrimEnd("AND ".ToCharArray()) : query;
+            return query;
         }
     }
 }
