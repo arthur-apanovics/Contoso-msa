@@ -14,6 +14,7 @@ namespace ContosoBot.Dialogs
                                               "\n\nHint - type '*help*' if you need more information.";
         private string _userName;
         private bool _userWelcomed;
+        private bool _signedIn;
         
         public Task StartAsync(IDialogContext context)
         {
@@ -24,11 +25,32 @@ namespace ContosoBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            if (!_userWelcomed)
+            if (!_signedIn)
+            {
+                await context.PostAsync("Welcome. I am your Contoso Banking assistant.");
+
+                var message = context.MakeMessage();
+                var attachment = new SigninCard
+                {
+                    Text = "Please sign-in to your Contoso Banking account by clicking on the button below. Let me know when you've signed-in",
+                    Buttons = new List<CardAction> { new CardAction(
+                        ActionTypes.Signin, 
+                        "Sign-in online", 
+                        value: "http://example.com/", 
+                        image: "http://3.bp.blogspot.com/-frRd1nH1EVA/TZXoVdy-LyI/AAAAAAAAAjg/tuqe3oH6t8U/s320/Contoso%2Blogo.png") }
+                }
+                .ToAttachment();
+
+                message.Attachments.Add(attachment);
+                await context.PostAsync(message);
+
+                _signedIn = true;
+                context.Wait(MessageReceivedAsync);
+            }
+            else if (!_userWelcomed)
             {
                 if (!context.UserData.TryGetValue("Name", out _userName))
                 {
-                    await context.PostAsync("Welcome. I am your Contoso Banking assistant.");
                     PromptDialog.Text(context, ResumeAfterPrompt, "Before we get started, could you please tell me your name?");
                 }
                 else
