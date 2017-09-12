@@ -86,12 +86,43 @@ namespace ContosoBot.Dialogs
                 else
                 {
                     AccountDataController.PerformInternalTransfer(_selectedAccount, _entityProps);
-                    await context.PostAsync("Transfer done");
+
+                    var message = context.MakeMessage();
+                    var attachment = GetReceiptCard(_entityProps, _selectedAccount);
+                    message.Attachments.Add(attachment);
+                    await context.PostAsync(message);
+
                     context.Done(true);
                 }
             }
             else
                 context.Done(false);
+        }
+        
+        //since currently global variables are used to store entities and active account, there is no need for parameters in this method
+        //however, future refactoring is planned for the project.
+        private static Attachment GetReceiptCard(EntityProps props, Account activeAccount)
+        {
+            var receiptCard = new ReceiptCard
+            {
+                Title = "Funds Transfer",
+                Facts = new List<Fact> { new Fact("Transfer from", activeAccount.Name), new Fact("Transfer to", props.Account.Name) },
+                Items = new List<ReceiptItem>
+                {
+                    new ReceiptItem("Amount", price: $"{props.MoneyAmount:C}", image: new CardImage(url: "https://d30y9cdsu7xlg0.cloudfront.net/png/3050-200.png")),
+                },
+                Tax = null,
+                Total = $"{props.MoneyAmount:C}",
+                Buttons = new List<CardAction>
+                {
+                    new CardAction(
+                        ActionTypes.OpenUrl,
+                        "View online",
+                        "http://example.com/")
+                }
+            };
+
+            return receiptCard.ToAttachment();
         }
     }
 }
