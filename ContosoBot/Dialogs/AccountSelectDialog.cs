@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Chronic;
 using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;

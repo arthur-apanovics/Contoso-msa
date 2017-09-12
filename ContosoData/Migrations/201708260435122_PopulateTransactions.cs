@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace ContosoData.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class PopulateTransactions : DbMigration
     {
         public override void Up()

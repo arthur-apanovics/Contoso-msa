@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using ContosoData;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;

@@ -1,6 +1,5 @@
 ﻿using System.Web.Http;
 using Autofac;
-using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Internals.Fibers;
