@@ -4,6 +4,7 @@ using ContosoData.Contollers;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 
 namespace ContosoBot.Dialogs
 {
@@ -31,6 +32,11 @@ namespace ContosoBot.Dialogs
 
         private async Task PerformTransactionQuery (IDialogContext context, IAwaitable<object> result)
         {
+            //post a typing reply
+            var wait = context.MakeMessage();
+            wait.Type = ActivityTypes.Typing;
+            await context.PostAsync(wait);
+
             var selection    = await result;
             _selectedAccount = selection as Account;
             string output    = String.Empty;

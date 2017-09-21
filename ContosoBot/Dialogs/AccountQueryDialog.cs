@@ -10,7 +10,10 @@ namespace ContosoBot.Dialogs
     {
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Fetching your accounts, just a moment...");
+            //post a typing reply
+            var wait  = context.MakeMessage();
+            wait.Type = ActivityTypes.Typing;
+            await context.PostAsync(wait);
 
             var reply = context.MakeMessage();
             reply.AttachmentLayout = AttachmentLayoutTypes.List;

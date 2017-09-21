@@ -127,6 +127,7 @@
     <Compile Include="Dialogs\AccountQueryDialog.cs" />
     <Compile Include="Dialogs\AccountSelectDialog.cs" />
     <Compile Include="Dialogs\ExchangeRateDialog.cs" />
+    <Compile Include="Dialogs\LoginDialog.cs" />
     <Compile Include="Dialogs\LuisDialog.cs" />
     <Compile Include="Dialogs\NameChangeDialog.cs" />
     <Compile Include="Dialogs\PaymentsDialog.cs" />

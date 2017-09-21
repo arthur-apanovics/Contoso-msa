@@ -26,7 +26,10 @@ namespace ContosoBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
-            //await context.PostAsync("Just a moment, getting your accounts data...");
+            //post a typing reply
+            var wait  = context.MakeMessage();
+            wait.Type = ActivityTypes.Typing;
+            await context.PostAsync(wait);
 
             var reply              = context.MakeMessage();
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;

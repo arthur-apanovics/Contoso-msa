@@ -8,7 +8,7 @@ namespace ContosoBot.Dialogs
         private const string HelpMessage = "Here's what I can help you with:  \n" +
                                      "* Checking account information  \n" +
                                      "* Viewing transaction history  \n" +
-                                     "* Performing internal fund transfers" +
+                                     "* Performing internal fund transfers  \n" +
                                      "* Converting and viewing currency rates  \n" +
                                      "\nSome tips:\n\n" +
                                      "* Type '*select account*' to change the active account  \n" +

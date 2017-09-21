@@ -30,6 +30,7 @@ namespace ContosoBot
                     var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                     Activity isTypingReply = activity.CreateReply();
                     isTypingReply.Type = ActivityTypes.Typing;
+                    isTypingReply.InputHint = InputHints.IgnoringInput;
                     await connector.Conversations.ReplyToActivityAsync(isTypingReply);
 
                     await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
@@ -59,7 +60,7 @@ namespace ContosoBot
             {
                 if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
                 {
-                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.5  \nSay Hi to the bot");
+                    var reply = message.CreateReply("Contoso&trade; Bank Assistant Bot v0.6");
 
                     ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
 
