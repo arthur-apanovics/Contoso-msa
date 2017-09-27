@@ -19,7 +19,7 @@ namespace ContosoBot.Dialogs
                     Buttons = new List<CardAction> { new CardAction(
                         ActionTypes.PostBack,
                         title:"Super Secure Sign-in",
-                        value: true,
+                        value: "http://example.com/",
                         image: "http://3.bp.blogspot.com/-frRd1nH1EVA/TZXoVdy-LyI/AAAAAAAAAjg/tuqe3oH6t8U/s320/Contoso%2Blogo.png") }
                 }
                 .ToAttachment();

@@ -47,7 +47,8 @@ namespace ContosoBot.Dialogs
         {
             var message = await result;
 
-            switch (message.Text.ToLower())
+            //remove "By " if value passed was button text instead of value
+            switch (message.Text.ToLower().Replace("by ", ""))
             {
                 case "quit":
                     context.Fail(null);

@@ -82,6 +82,7 @@ namespace ContosoBot.Dialogs
                 {
                     new CardAction{ Title = "Account balance", Type=ActionTypes.ImBack, Value="Account balance" },
                     new CardAction{ Title = "Transaction History", Type=ActionTypes.ImBack, Value="Transactions" },
+                    new CardAction{ Title = "Internal Transfer", Type=ActionTypes.ImBack, Value="Transfer" },
                     new CardAction{ Title = "Show Help", Type=ActionTypes.ImBack, Value="Help me figure out" }
                 }
             };
