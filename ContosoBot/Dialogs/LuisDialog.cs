@@ -43,7 +43,7 @@ namespace ContosoBot.Dialogs
         [LuisIntent("QueryAccounts")]
         public async Task QueryAccounts(IDialogContext context, LuisResult result)
         {
-            context.Call(new AccountQueryDialog(), Callback);
+            context.Call(new AccountQueryDialog(result), Callback);
         }
 
         [LuisIntent("QueryTransactionsByDates")]
@@ -66,7 +66,6 @@ namespace ContosoBot.Dialogs
 
         private async Task Callback(IDialogContext context, IAwaitable<object> result)
         {
-            //TODO: make username accessible from a static class
             await PostSuggestions(context);
             context.Wait(MessageReceived);
         }
@@ -74,16 +73,16 @@ namespace ContosoBot.Dialogs
         private async Task PostSuggestions(IDialogContext context)
         {
             var suggestionMessage = context.MakeMessage();
-            suggestionMessage.Text = $"What would you like to do, {context.Activity.From.Name}?";
+            suggestionMessage.Text = $"What can I help you with, {context.Activity.From.Name}? Type or select an option";
             suggestionMessage.InputHint = InputHints.ExpectingInput;
 
             suggestionMessage.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()
                 {
-                    new CardAction{ Title = "Accounts", Type=ActionTypes.ImBack, Value="Accounts" },
-                    new CardAction{ Title = "Transactions", Type=ActionTypes.ImBack, Value="Transactions" },
-                    new CardAction{ Title = "Help", Type=ActionTypes.ImBack, Value="Help me figure out" }
+                    new CardAction{ Title = "Account balance", Type=ActionTypes.ImBack, Value="Account balance" },
+                    new CardAction{ Title = "Transaction History", Type=ActionTypes.ImBack, Value="Transactions" },
+                    new CardAction{ Title = "Show Help", Type=ActionTypes.ImBack, Value="Help me figure out" }
                 }
             };
 

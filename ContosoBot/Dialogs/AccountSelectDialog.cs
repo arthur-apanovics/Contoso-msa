@@ -11,38 +11,63 @@ using Newtonsoft.Json;
 namespace ContosoBot.Dialogs
 {
     [Serializable]
-    public class AccountSelectDialog : IDialog
+    public class AccountSelectDialog : TypingReply, IDialog
     {
         private readonly IEnumerable<Account> _accounts;
-        private Account _currentAccount;
-        private bool _saveGlobally;
+        //private Account _currentAccount;
+        private readonly bool _saveGlobally;
+        private readonly bool _suggestions;
+        private readonly string _message;
 
-        public AccountSelectDialog(bool saveGlobally = true)
+        public AccountSelectDialog(bool suggestions = false, bool saveGlobally = true, string message = "Select account:")
         {
             // have to convert to a list, otherwise get a serialization error (?!)
             _accounts = AccountDataController.Accounts.ToList();
             _saveGlobally = saveGlobally;
+            _message = message;
+            _suggestions = suggestions;
         }
 
         public async Task StartAsync(IDialogContext context)
         {
-            //post a typing reply
-            var wait  = context.MakeMessage();
-            wait.Type = ActivityTypes.Typing;
-            await context.PostAsync(wait);
+            await context.PostAsync(PostTypingReply(context));
 
-            var reply              = context.MakeMessage();
-            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-            reply.InputHint        = InputHints.ExpectingInput;
-            reply.Attachments      = GetAccountAttachments();
-
-            if (!context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _currentAccount) || !_saveGlobally)
-                await context.PostAsync("Select account:");
+            var reply = context.MakeMessage();
+            if (_suggestions)
+            {
+                reply.SuggestedActions = GetAccountSuggestions();
+                reply.Text             = _message;
+            }
             else
-                await context.PostAsync($"**{_currentAccount.Name}** is the current active account. Select new account to work with:");
+            {
+                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                reply.Attachments      = GetAccountAttachments();
+
+                if (!string.IsNullOrEmpty(_message))
+                    await context.PostAsync(_message);
+            }
+
+            reply.InputHint = InputHints.ExpectingInput;
+
+            //    await context.PostAsync($"{_currentAccount.Name} is the current active account. Select new account to work with:");
 
             await context.PostAsync(reply);
             context.Wait(MessageReceivedAsync);
+        }
+
+        private SuggestedActions GetAccountSuggestions()
+        {
+            var suggestedActions = new SuggestedActions
+            {
+                Actions = new List<CardAction>()
+            };
+
+            foreach (var account in _accounts)
+            {
+                suggestedActions.Actions.Add(new CardAction { Title = account.Name, Type = ActionTypes.ImBack, Value = account.Name });
+            }
+
+            return suggestedActions;
         }
 
         public IList<Attachment> GetAccountAttachments()
@@ -54,10 +79,10 @@ namespace ContosoBot.Dialogs
                 result.Add(
                     new ThumbnailCard()
                     {
-                        Title    = account.Name,
+                        Title = account.Name,
                         Subtitle = account.Number,
                         //Text   = $"Type: {account.Type}, Overdraft limit: {account.OverdraftLimit:C}, Balance: {account.Balance:C}",
-                        Buttons  = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account.Name) } //return account name for Slack and Skype compatibility
+                        Buttons = new List<CardAction>() { new CardAction(ActionTypes.PostBack, "Select", value: account.Name) } //return account name for Slack and Skype compatibility
                     }
                     .ToAttachment()
                 );
@@ -110,7 +135,7 @@ namespace ContosoBot.Dialogs
                 if (_saveGlobally)
                     context.ConversationData.SetValue(DataStrings.ActiveAccount, selectedAccount);
 
-                await context.PostAsync($"{selectedAccount.Name} selected");
+                //await context.PostAsync($"{selectedAccount.Name} selected");
                 context.Done(selectedAccount);
             }
             else

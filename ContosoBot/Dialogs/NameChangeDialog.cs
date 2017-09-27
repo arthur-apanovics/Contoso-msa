@@ -20,7 +20,7 @@ namespace ContosoBot.Dialogs
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var message = await result;
-            var name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(message.Text);
+            var name    = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(message.Text);
 
             context.UserData.SetValue(DataStrings.Name, name);
 
