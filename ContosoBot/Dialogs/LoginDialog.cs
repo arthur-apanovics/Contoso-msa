@@ -10,12 +10,10 @@ namespace ContosoBot.Dialogs
     {
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Welcome, I am your Contoso Banking assistant.");
-
             var message = context.MakeMessage();
             var attachment = new SigninCard
                 {
-                    Text = "Please sign-in to your Contoso Banking account by clicking on the button below",
+                    Text = "Welcome. Please sign-in to your Contoso Banking account by clicking on the button below",
                     Buttons = new List<CardAction> { new CardAction(
                         ActionTypes.PostBack,
                         title:"Super Secure Sign-in",

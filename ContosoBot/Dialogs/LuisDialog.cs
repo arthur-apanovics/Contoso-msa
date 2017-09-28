@@ -14,7 +14,7 @@ namespace ContosoBot.Dialogs
     {
         public override async Task StartAsync(IDialogContext context)
         {
-            await PostSuggestions(context);
+            await PostSuggestions(context, message: $"What can I help you with, {context.Activity.From.Name}?");
             context.Wait(MessageReceived);
         }
 
@@ -22,7 +22,7 @@ namespace ContosoBot.Dialogs
         public async Task None(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Sorry, I didn't understand that");
-            await PostSuggestions(context);
+            await PostSuggestions(context, null);
             context.Wait(MessageReceived);
         }
 
@@ -37,7 +37,7 @@ namespace ContosoBot.Dialogs
         {
             var message = result.Query;
             await context.PostAsync($"{message} to you too!");
-            await PostSuggestions(context);
+            await PostSuggestions(context, null);
         }
 
         [LuisIntent("QueryAccounts")]
@@ -66,14 +66,16 @@ namespace ContosoBot.Dialogs
 
         private async Task Callback(IDialogContext context, IAwaitable<object> result)
         {
-            await PostSuggestions(context);
+            await PostSuggestions(context, null);
             context.Wait(MessageReceived);
         }
 
-        private async Task PostSuggestions(IDialogContext context)
+        private async Task PostSuggestions(IDialogContext context, string message)
         {
             var suggestionMessage = context.MakeMessage();
-            suggestionMessage.Text = $"What can I help you with, {context.Activity.From.Name}? Type or select an option";
+
+            suggestionMessage.Text = string.IsNullOrEmpty(message) ? $"That was fun! What now, {context.Activity.From.Name}?" : message;
+
             suggestionMessage.InputHint = InputHints.ExpectingInput;
 
             suggestionMessage.SuggestedActions = new SuggestedActions()

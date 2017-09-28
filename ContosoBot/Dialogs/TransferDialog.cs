@@ -14,56 +14,76 @@ namespace ContosoBot.Dialogs
     public class TransferDialog : IDialog
     {
         private EntityProps _entityProps;
-        private Account _selectedAccount;
+        private Account _sourceAccount;
+        private Account _targetAccount;
+        private float _amount;
 
         public TransferDialog(LuisResult luisResult)
         {
-            _entityProps = new EntityAssigner().AssignEntities(luisResult);
+            _entityProps   = new EntityAssigner().AssignEntities(luisResult);
+            _targetAccount = _entityProps.Account;
+            _amount        = _entityProps.MoneyAmount;
         }
 
         public async Task StartAsync(IDialogContext context)
         {
-            context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _selectedAccount);
-
             //all info supplied ?
-            if (_entityProps.Account != null && _entityProps.MoneyAmount != 0 &&
-                _selectedAccount != null)
-            {
+            if (_entityProps.Account != null && _entityProps.MoneyAmount != 0 && _sourceAccount != null)
                 await ValidateAccounts(context);
-            }
-            else if (_entityProps.Account != null && _entityProps.MoneyAmount != 0 &&
-                     _selectedAccount == null)
-            {
-                await context.PostAsync("Please choose source account");
-                context.Call(new AccountSelectDialog(), ResumeAfterAccountSelectDialog);
-            }
+
+            else if (_targetAccount != null && _sourceAccount == null)
+                context.Call(new AccountSelectDialog(message: "Almost there! Choose source account", suggestions: true), ResumeAfterSourceAccountSelectDialog);
+
             else
-            {
-                await context.PostAsync(
-                    "Sorry, not enough information provided.  \nPlease specify *target account* and amount of funds to transfer.");
-                context.Done(false);
-            }
+                context.Call(new AccountSelectDialog(message: "Cool! Let's start by selecting the source account", suggestions: true), ResumeAfterSourceAccountSelectDialog);
         }
 
-        private async Task ResumeAfterAccountSelectDialog(IDialogContext context, IAwaitable<object> result)
+        private async Task ResumeAfterSourceAccountSelectDialog(IDialogContext context, IAwaitable<object> result)
         {
-            if (context.ConversationData.TryGetValue(DataStrings.ActiveAccount, out _selectedAccount))
-                await ValidateAccounts(context);
+            _sourceAccount = await result as Account;
+
+            if (_targetAccount == null)
+                context.Call(new AccountSelectDialog(message: "Fantastic! Now the target account", suggestions: true), ResumeAfterTargetAccountSelectDialog);
+            else if (_amount == 0)
+                PromptForAmount(context);
             else
-                context.Fail(new Exception("Something went wrong"));
+                await ValidateAccounts(context);
+        }
+
+        private async Task ResumeAfterTargetAccountSelectDialog(IDialogContext context, IAwaitable<object> result)
+        {
+            _targetAccount = await result as Account;
+
+            if (_amount == 0)
+                PromptForAmount(context);
+            else
+                await ValidateAccounts(context);
+        }
+
+        private void PromptForAmount(IDialogContext context)
+        {
+            PromptDialog.Number(context, ResumeAfterAmountSelectDialog, "Alrighty! How much should I transfer??",
+                min: 0.1f, max: float.MaxValue);
+        }
+
+        private async Task ResumeAfterAmountSelectDialog(IDialogContext context, IAwaitable<double> result)
+        {
+            _amount = (float) await result;
+
+            await ValidateAccounts(context);
         }
 
         private async Task ValidateAccounts(IDialogContext context)
         {
-            if (_selectedAccount.Id == _entityProps.Account.Id)
+            if (_sourceAccount.Id == _targetAccount.Id)
             {
-                await context.PostAsync("Sorry, you can't transfer to the same account");
+                await context.PostAsync("OK, great, nothing done... easy as. Next time try to transfer from two different accounts");
                 context.Done(false);
             }
             else
             {
                 PromptDialog.Confirm(context, ResumeAfterConfirmationPrompt,
-                    $"OK, transfer **{_entityProps.MoneyAmount:C}** from **{_selectedAccount.Name}** to **{_entityProps.Account.Name}**?");
+                    $"Easy peasy. Transfer {_amount:C} from {_sourceAccount.Name} to {_targetAccount.Name}?");
             }
         }
 
@@ -73,41 +93,41 @@ namespace ContosoBot.Dialogs
 
             if (proceed)
             {
-                if (_selectedAccount.Id == _entityProps.Account.Id)
-                {
-                    await context.PostAsync("Sorry, you can't transfer to the same account");
-                    context.Done(false);
-                }
-                else
-                {
-                    AccountDataController.PerformInternalTransfer(_selectedAccount, _entityProps);
+                UpdateEntityProps();
 
-                    var message = context.MakeMessage();
-                    var attachment = GetReceiptCard(_entityProps, _selectedAccount);
-                    message.Attachments.Add(attachment);
-                    await context.PostAsync(message);
+                AccountDataController.PerformInternalTransfer(_sourceAccount, _entityProps);
 
-                    context.Done(true);
-                }
+                var message    = context.MakeMessage();
+                var attachment = GetReceiptCard();
+                message.Attachments.Add(attachment);
+                await context.PostAsync(message);
+
+                context.Done(true);
             }
             else
                 context.Done(false);
         }
-        
+
+        private void UpdateEntityProps()
+        {
+            _entityProps.Account     = _targetAccount;
+            _entityProps.MoneyAmount = _amount;
+        }
+
         //since currently global variables are used to store entities and active account, there is no need for parameters in this method
         //however, future refactoring is planned for the project.
-        private static Attachment GetReceiptCard(EntityProps props, Account activeAccount)
+        private Attachment GetReceiptCard()
         {
             var receiptCard = new ReceiptCard
             {
                 Title = "Funds Transferred",
-                Facts = new List<Fact> { new Fact("Transfer from", activeAccount.Name), new Fact("Transfer to", props.Account.Name) },
-                Items = new List<ReceiptItem>
-                {
-                    new ReceiptItem("Amount", price: $"{props.MoneyAmount:C}", image: new CardImage(url: "https://d30y9cdsu7xlg0.cloudfront.net/png/3050-200.png")),
-                },
-                Tax = null,
-                Total = $"{props.MoneyAmount:C}",
+                Facts = new List<Fact> { new Fact("From", _sourceAccount.Name), new Fact("To", _targetAccount.Name) },
+                //Items = new List<ReceiptItem>
+                //{
+                //    new ReceiptItem("Fund Transfer", price: $"{_amount:C}", , image: new CardImage(url: "https://d30y9cdsu7xlg0.cloudfront.net/png/3050-200.png")),
+                //},
+                Tax     = "You wish",
+                Total   = $"{_amount:C}",
                 Buttons = new List<CardAction>
                 {
                     new CardAction(
