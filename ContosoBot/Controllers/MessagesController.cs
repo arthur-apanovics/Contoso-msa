@@ -2,12 +2,9 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Autofac;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 
 namespace ContosoBot
@@ -51,22 +48,13 @@ namespace ContosoBot
         {
             if (message.Type == ActivityTypes.DeleteUserData)
             {
-                using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, message))
-                {
-                    var botData = scope.Resolve<IBotData>();
-                    botData.LoadAsync(default(CancellationToken));
-                    var stack = scope.Resolve<IDialogStack>();
-                    stack.Reset();
-                    botData.FlushAsync(default(CancellationToken));
-                }
+                message.GetStateClient().BotState
+                    .DeleteStateForUserWithHttpMessagesAsync(message.ChannelId, message.From.Id);
 
-                //message.GetStateClient().BotState
-                //    .DeleteStateForUserWithHttpMessagesAsync(message.ChannelId, message.From.Id);
-
-                //var client = new ConnectorClient(new Uri(message.ServiceUrl));
-                //var clearMsg = message.CreateReply();
-                //clearMsg.Text = $"Resetting everything for conversation: {message.Conversation.Id}";
-                //client.Conversations.SendToConversationAsync(clearMsg);
+                var client = new ConnectorClient(new Uri(message.ServiceUrl));
+                var clearMsg = message.CreateReply();
+                clearMsg.Text = $"Resetting everything for conversation: {message.Conversation.Id}";
+                client.Conversations.SendToConversationAsync(clearMsg);
             }
             else if (message.Type == ActivityTypes.ConversationUpdate)
             {
