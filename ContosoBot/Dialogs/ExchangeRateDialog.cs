@@ -78,8 +78,6 @@ namespace ContosoBot.Dialogs
                     context.Wait(MessageReceivedAsync);
                     break;
             }
-
-
         }
 
         private async Task SetSourceAndPrint(IDialogContext context, IAwaitable<IMessageActivity> result)
@@ -89,8 +87,6 @@ namespace ContosoBot.Dialogs
 
             var rates = new CurrencyOperations().GetExchangeRate(_sourceCurrency);
             await PrintResults(context, rates);
-
-            context.Done(true);
         }
 
         private IMessageActivity GetSuggestedActions(IDialogContext context, string message)

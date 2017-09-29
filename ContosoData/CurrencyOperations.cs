@@ -14,7 +14,7 @@ namespace ContosoData
         /// <returns>ExchangeRate</returns>
         public ExchangeRate GetExchangeRate(string currency)
         {
-            var abbreviation = GetCurrencyAbbreviation(currency);
+            var abbreviation = currency.Length == 3 ? currency : GetCurrencyAbbreviation(currency);
             var rateJson = new ExchangeRateController().GetRates(abbreviation);
             ExchangeRate exchangeRate;
 
