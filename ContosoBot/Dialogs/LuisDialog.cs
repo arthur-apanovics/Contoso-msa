@@ -22,7 +22,7 @@ namespace ContosoBot.Dialogs
         public async Task None(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Sorry, I didn't understand that");
-            await PostSuggestions(context, null);
+            await PostSuggestions(context, "Tell me what you'd like to do either by typing or selecting one of the options, por favor.");
             context.Wait(MessageReceived);
         }
 
@@ -74,7 +74,7 @@ namespace ContosoBot.Dialogs
         {
             var suggestionMessage = context.MakeMessage();
 
-            suggestionMessage.Text = string.IsNullOrEmpty(message) ? $"That was fun! What now, {context.Activity.From.Name}?" : message;
+            suggestionMessage.Text = string.IsNullOrEmpty(message) ? $"That was fun! What's next, {context.Activity.From.Name}?" : message;
 
             suggestionMessage.InputHint = InputHints.ExpectingInput;
 
@@ -82,10 +82,11 @@ namespace ContosoBot.Dialogs
             {
                 Actions = new List<CardAction>()
                 {
+                    new CardAction{ Title = "Show Help", Type=ActionTypes.ImBack, Value="Help me figure out" },
                     new CardAction{ Title = "Account balance", Type=ActionTypes.ImBack, Value="Account balance" },
                     new CardAction{ Title = "Transaction History", Type=ActionTypes.ImBack, Value="Transactions" },
                     new CardAction{ Title = "Internal Transfer", Type=ActionTypes.ImBack, Value="Transfer" },
-                    new CardAction{ Title = "Show Help", Type=ActionTypes.ImBack, Value="Help me figure out" }
+                    new CardAction{ Title = "Exchange Rate", Type=ActionTypes.ImBack, Value="Exchange rate" }
                 }
             };
 

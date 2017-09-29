@@ -39,8 +39,8 @@ namespace ContosoData
         /// <returns>ExchangeRate</returns>
         public ExchangeRate GetExchangeRate(string firstCurrency, string secondCurrency)
         {
-            var firstAbbr  = GetCurrencyAbbreviation(firstCurrency);
-            var secondAbbr = GetCurrencyAbbreviation(secondCurrency);
+            var firstAbbr  = firstCurrency.Length == 3 ? firstCurrency : GetCurrencyAbbreviation(firstCurrency);
+            var secondAbbr = secondCurrency.Length == 3 ? secondCurrency : GetCurrencyAbbreviation(secondCurrency);
 
             var rateJson = new ExchangeRateController().GetRates(firstAbbr, secondAbbr);
             ExchangeRate exchangeRate;
@@ -60,9 +60,9 @@ namespace ContosoData
 
         public float ConvertCurrency(string baseCurrency, string targetCurrency, float amount)
         {
-            var targetAbbr       = GetCurrencyAbbreviation(targetCurrency);
-            var exchangeRate     = GetExchangeRate(baseCurrency, targetCurrency);
-            var targetRate       = (float) exchangeRate.Rates.GetType().GetProperty(targetAbbr).GetValue(exchangeRate.Rates);
+            var targetAbbr   = targetCurrency.Length == 3 ? targetCurrency : GetCurrencyAbbreviation(targetCurrency);
+            var exchangeRate = GetExchangeRate(baseCurrency, targetCurrency);
+            var targetRate   = (float) exchangeRate.Rates.GetType().GetProperty(targetAbbr).GetValue(exchangeRate.Rates);
 
             var conversionResult = amount / targetRate;
 

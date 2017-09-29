@@ -29,7 +29,7 @@ namespace ContosoBot.Dialogs
         {
             //all info supplied ?
             if (_entityProps.Account != null && _entityProps.MoneyAmount != 0 && _sourceAccount != null)
-                await ValidateAccounts(context);
+                await ValidateAndConfirm(context);
 
             else if (_targetAccount != null && _sourceAccount == null)
                 context.Call(new AccountSelectDialog(message: "Almost there! Choose source account", suggestions: true), ResumeAfterSourceAccountSelectDialog);
@@ -47,7 +47,7 @@ namespace ContosoBot.Dialogs
             else if (_amount == 0)
                 PromptForAmount(context);
             else
-                await ValidateAccounts(context);
+                await ValidateAndConfirm(context);
         }
 
         private async Task ResumeAfterTargetAccountSelectDialog(IDialogContext context, IAwaitable<object> result)
@@ -57,7 +57,7 @@ namespace ContosoBot.Dialogs
             if (_amount == 0)
                 PromptForAmount(context);
             else
-                await ValidateAccounts(context);
+                await ValidateAndConfirm(context);
         }
 
         private void PromptForAmount(IDialogContext context)
@@ -70,10 +70,10 @@ namespace ContosoBot.Dialogs
         {
             _amount = (float) await result;
 
-            await ValidateAccounts(context);
+            await ValidateAndConfirm(context);
         }
 
-        private async Task ValidateAccounts(IDialogContext context)
+        private async Task ValidateAndConfirm(IDialogContext context)
         {
             if (_sourceAccount.Id == _targetAccount.Id)
             {

@@ -14,7 +14,6 @@ namespace ContosoBot.Dialogs
     public class AccountSelectDialog : TypingReply, IDialog
     {
         private readonly IEnumerable<Account> _accounts;
-        //private Account _currentAccount;
         private readonly bool _saveGlobally;
         private readonly bool _suggestions;
         private readonly string _message;
@@ -22,10 +21,10 @@ namespace ContosoBot.Dialogs
         public AccountSelectDialog(bool suggestions = false, bool saveGlobally = true, string message = "Select account:")
         {
             // have to convert to a list, otherwise get a serialization error (?!)
-            _accounts = AccountDataController.Accounts.ToList();
+            _accounts     = AccountDataController.Accounts.ToList();
             _saveGlobally = saveGlobally;
-            _message = message;
-            _suggestions = suggestions;
+            _message      = message;
+            _suggestions  = suggestions;
         }
 
         public async Task StartAsync(IDialogContext context)
@@ -49,7 +48,7 @@ namespace ContosoBot.Dialogs
 
             reply.InputHint = InputHints.ExpectingInput;
 
-            //    await context.PostAsync($"{_currentAccount.Name} is the current active account. Select new account to work with:");
+            //await context.PostAsync($"{_currentAccount.Name} is the current active account. Select new account to work with:");
 
             await context.PostAsync(reply);
             context.Wait(MessageReceivedAsync);

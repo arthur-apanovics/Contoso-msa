@@ -1,15 +1,20 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using ContosoData;
 using ContosoData.Model;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 
 namespace ContosoBot.Dialogs
 {
     public class ExchangeRateDialog : IDialog
     {
         private EntityProps _entityProps;
+        private string _sourceCurrency;
+        private string _targetCurrency;
+        private float _amount;
 
         public ExchangeRateDialog(LuisResult luisResult)
         {
@@ -49,10 +54,117 @@ namespace ContosoBot.Dialogs
             }
             else
             {
-                //TODO: Currency form
-                await context.PostAsync("Sorry, not enough inforamtion supplied to view currency exchange. Please be more specific.");
-                context.Done(false);
+                await context.PostAsync(GetSuggestedActions(context, "Bienvenu! View the rate or convert?"));
+                context.Wait(MessageReceivedAsync);
             }
+        }
+
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            var message = await result;
+
+            switch (message.Text.ToLower())
+            {
+                case "view rate":
+                    await context.PostAsync(CurrencyPicker(context, "Select a currency, s'il vous plaît"));
+                    context.Wait(SetSourceAndPrint);
+                    break;
+                case "convert":
+                    await context.PostAsync(CurrencyPicker(context, "Bien. What's the source currency?"));
+                    context.Wait(ExchangeSourceCurrencySet);
+                    break;
+                default:
+                    await context.PostAsync(GetSuggestedActions(context, "Quoi? Please try again"));
+                    context.Wait(MessageReceivedAsync);
+                    break;
+            }
+
+
+        }
+
+        private async Task SetSourceAndPrint(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            var message = await result;
+            _sourceCurrency = message.Text;
+
+            var rates = new CurrencyOperations().GetExchangeRate(_sourceCurrency);
+            await PrintResults(context, rates);
+
+            context.Done(true);
+        }
+
+        private IMessageActivity GetSuggestedActions(IDialogContext context, string message)
+        {
+            var suggestionMessage = context.MakeMessage();
+            suggestionMessage.Text = message;
+            suggestionMessage.SuggestedActions = new SuggestedActions()
+            {
+                Actions = new List<CardAction>()
+                {
+                    new CardAction(){ Title = "View Rate", Type = ActionTypes.ImBack, Value = "View Rate"},
+                    new CardAction(){ Title = "Convert", Type = ActionTypes.ImBack, Value = "Convert"}
+                }
+            };
+
+            return suggestionMessage;
+        }
+
+        private async Task ExchangeSourceCurrencySet(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            var message = await result;
+            _sourceCurrency = message.Text;
+
+            await context.PostAsync(CurrencyPicker(context, "C'est manifique! Now the target currency"));
+            context.Wait(ExchangeTargetCrrencySet);
+        }
+
+        private async Task ExchangeTargetCrrencySet(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            var message     = await result;
+            _targetCurrency = message.Text;
+
+            PromptDialog.Number(context, ResumeAfterAmountDialog, $"Absolument incroyable! How many {_sourceCurrency} would you like to convert?");
+        }
+
+        private async Task ResumeAfterAmountDialog(IDialogContext context, IAwaitable<double> result)
+        {
+            var message = await result;
+            _amount     = (float)message;
+
+            var convertedAmount = new CurrencyOperations().ConvertCurrency(_sourceCurrency, _targetCurrency, _amount);
+
+            var resultCard = context.MakeMessage();
+            resultCard.Attachments.Add(
+                new ThumbnailCard()
+                    {
+                        Text = $"{_amount} {_sourceCurrency} is worth {convertedAmount} {_targetCurrency}",
+                    }
+                    .ToAttachment());
+
+            await context.PostAsync(resultCard);
+
+            context.Done(true);
+        }
+
+        private IMessageActivity CurrencyPicker(IDialogContext context, string message)
+        {
+            var suggestionMessage = context.MakeMessage();
+            suggestionMessage.Text = message;
+            suggestionMessage.SuggestedActions = new SuggestedActions()
+            {
+                Actions = new List<CardAction>()
+            };
+
+            var rateProperties = typeof(Rates).GetProperties();
+
+            foreach (var currency in rateProperties)
+            {
+                if (currency.Name == _sourceCurrency) continue;
+                var item = new CardAction() { Title = currency.Name, Type = ActionTypes.ImBack, Value = currency.Name };
+                suggestionMessage.SuggestedActions.Actions.Add(item);
+            }
+
+            return suggestionMessage;
         }
 
         private async Task PrintResults(IDialogContext context, ExchangeRate rates)
@@ -61,10 +173,19 @@ namespace ContosoBot.Dialogs
 
             result.Append($"1 {rates.Base} equals:  \n");
 
+            //IMessageActivity result = context.MakeMessage();
+
             foreach (var rate in rates.Rates.GetType().GetProperties())
             {
                 var propValue = rate.GetValue(rates.Rates);
                 if ((float)propValue == 0) continue;
+
+                //TODO: Build card for rate result
+                //result.Attachments.Add(
+                //    new ThumbnailCard()
+                //    {
+                //        Title = $"{rates.Base}{propValue}"
+                //    });
 
                 result.Append($"{propValue} {rate.Name}  \n");
             }
